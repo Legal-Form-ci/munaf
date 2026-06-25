@@ -4,7 +4,7 @@ import { getStats, getDossiers, getCotisations, getMembers, formatFcfa } from "@
 import { MemberStatusBadge, DossierStatusBadge } from "@/components/StatusBadge";
 import { Users, TrendingUp, FileText, HandCoins, ArrowUpRight, AlertCircle } from "lucide-react";
 
-export const Route = createFileRoute("/admin")({
+export const Route = createFileRoute("/admin/")({
   head: () => ({ meta: [{ title: "Tableau de bord — MuNAF Daloa" }] }),
   component: () => (
     <AppShell>
