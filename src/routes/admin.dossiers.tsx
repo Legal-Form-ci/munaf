@@ -82,7 +82,7 @@ function DossiersPage() {
                     Déclaré le {d.declareLe} par <span className="text-foreground">{d.declarePar}</span>
                   </div>
                   <div className="mt-1 text-sm text-muted-foreground">
-                    {d.quartier}, {d.region} · Bénéficiaire : <span className="text-foreground">{d.beneficiaire}</span>
+                    Quartier {d.quartier}, Daloa · Bénéficiaire : <span className="text-foreground">{d.beneficiaire}</span>
                   </div>
                 </div>
                 <div className="text-right shrink-0">
