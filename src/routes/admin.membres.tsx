@@ -32,7 +32,7 @@ function MembersPage() {
         m.nom.toLowerCase().includes(qLow) ||
         m.prenom.toLowerCase().includes(qLow) ||
         m.matricule.toLowerCase().includes(qLow) ||
-        m.village.toLowerCase().includes(qLow) ||
+        m.quartier.toLowerCase().includes(qLow) ||
         m.telephone.includes(qLow)
       );
     });
@@ -122,7 +122,7 @@ function MembersPage() {
                     <code className="text-xs bg-muted px-2 py-1 rounded">{m.matricule}</code>
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell">
-                    <div>{m.village}</div>
+                    <div>{m.quartier}</div>
                     <div className="text-xs text-muted-foreground">{m.region}</div>
                   </td>
                   <td className="px-4 py-3">
