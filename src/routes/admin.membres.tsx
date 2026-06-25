@@ -5,7 +5,7 @@ import { MemberStatusBadge } from "@/components/StatusBadge";
 import { useMemo, useState } from "react";
 import { Search, Filter, Download, UserPlus } from "lucide-react";
 
-export const Route = createFileRoute("/membres")({
+export const Route = createFileRoute("/admin/membres")({
   head: () => ({ meta: [{ title: "Membres — MuNAF" }] }),
   component: () => (
     <AppShell>
@@ -32,7 +32,7 @@ function MembersPage() {
         m.nom.toLowerCase().includes(qLow) ||
         m.prenom.toLowerCase().includes(qLow) ||
         m.matricule.toLowerCase().includes(qLow) ||
-        m.village.toLowerCase().includes(qLow) ||
+        m.quartier.toLowerCase().includes(qLow) ||
         m.telephone.includes(qLow)
       );
     });
@@ -68,7 +68,7 @@ function MembersPage() {
           <input
             value={q}
             onChange={(e) => { setQ(e.target.value); setPage(1); }}
-            placeholder="Rechercher nom, matricule, village, téléphone…"
+            placeholder="Rechercher nom, matricule, quartier, téléphone…"
             className="w-full h-10 pl-9 pr-3 rounded-lg bg-muted text-sm border border-transparent focus:border-ring focus:bg-card outline-none"
           />
         </div>
@@ -122,8 +122,8 @@ function MembersPage() {
                     <code className="text-xs bg-muted px-2 py-1 rounded">{m.matricule}</code>
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell">
-                    <div>{m.village}</div>
-                    <div className="text-xs text-muted-foreground">{m.region}</div>
+                    <div>{m.quartier}</div>
+                    <div className="text-xs text-muted-foreground">Daloa</div>
                   </td>
                   <td className="px-4 py-3">
                     <div className="font-semibold tabular-nums">{formatFcfa(m.formule)}</div>

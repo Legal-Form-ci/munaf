@@ -3,36 +3,36 @@ import { AppShell } from "@/components/AppShell";
 import { getMembers, getStats, formatFcfa } from "@/lib/mock-data";
 import { MapPin, Users } from "lucide-react";
 
-export const Route = createFileRoute("/regions")({
-  head: () => ({ meta: [{ title: "Régions — MuNAF" }] }),
+export const Route = createFileRoute("/admin/quartiers")({
+  head: () => ({ meta: [{ title: "Quartiers & délégués — MuNAF Daloa" }] }),
   component: () => (
     <AppShell>
-      <RegionsPage />
+      <QuartiersPage />
     </AppShell>
   ),
 });
 
-function RegionsPage() {
+function QuartiersPage() {
   const stats = getStats();
   const members = getMembers();
-  const sorted = [...stats.byRegion].sort((a, b) => b.count - a.count);
+  const sorted = [...stats.byQuartier].sort((a, b) => b.count - a.count);
 
   return (
     <div className="space-y-5 max-w-[1400px] mx-auto">
       <div>
-        <h1 className="text-2xl font-display font-bold">Régions & délégués</h1>
+        <h1 className="text-2xl font-display font-bold">Quartiers & délégués</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Couverture territoriale et représentants locaux
+          Couverture territoriale de la zone pilote — Daloa, Haut-Sassandra
         </p>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {sorted.map((r) => {
-          const regionMembers = members.filter((m) => m.region === r.region);
-          const cotise = regionMembers.reduce((s, m) => s + m.totalCotise, 0);
-          const actifs = regionMembers.filter((m) => m.status === "actif").length;
+          const qMembers = members.filter((m) => m.quartier === r.quartier);
+          const cotise = qMembers.reduce((s, m) => s + m.totalCotise, 0);
+          const actifs = qMembers.filter((m) => m.status === "actif").length;
           return (
-            <div key={r.region} className="rounded-2xl border bg-card p-5 hover:shadow-md transition-shadow">
+            <div key={r.quartier} className="rounded-2xl border bg-card p-5 hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between">
                 <div className="size-11 rounded-xl bg-gold/15 text-gold flex items-center justify-center">
                   <MapPin className="size-5" />
@@ -41,7 +41,7 @@ function RegionsPage() {
                   {actifs} actifs
                 </span>
               </div>
-              <h3 className="mt-4 font-display font-bold text-lg">{r.region}</h3>
+              <h3 className="mt-4 font-display font-bold text-lg">{r.quartier}</h3>
               <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
                 <div>
                   <div className="text-xs text-muted-foreground">Membres</div>
@@ -54,11 +54,11 @@ function RegionsPage() {
               </div>
               <div className="mt-4 pt-4 border-t flex items-center gap-2.5">
                 <div className="size-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
-                  {r.region.slice(0, 2).toUpperCase()}
+                  {r.quartier.slice(0, 2).toUpperCase()}
                 </div>
                 <div>
-                  <div className="text-sm font-medium">Délégué régional</div>
-                  <div className="text-xs text-muted-foreground">{Math.ceil(r.count / 30)} délégués locaux</div>
+                  <div className="text-sm font-medium">Délégué de quartier</div>
+                  <div className="text-xs text-muted-foreground">{Math.max(1, Math.ceil(r.count / 30))} relais locaux</div>
                 </div>
               </div>
             </div>

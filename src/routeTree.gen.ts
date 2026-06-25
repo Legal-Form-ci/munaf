@@ -10,35 +10,64 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerificationRouteImport } from './routes/verification'
-import { Route as RegionsRouteImport } from './routes/regions'
-import { Route as MembresRouteImport } from './routes/membres'
-import { Route as DossiersRouteImport } from './routes/dossiers'
-import { Route as CotisationsRouteImport } from './routes/cotisations'
+import { Route as MembreRouteImport } from './routes/membre'
+import { Route as FormulesRouteImport } from './routes/formules'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as DelegueRouteImport } from './routes/delegue'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ConnexionRouteImport } from './routes/connexion'
+import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
+import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminQuartiersRouteImport } from './routes/admin.quartiers'
+import { Route as AdminMembresRouteImport } from './routes/admin.membres'
+import { Route as AdminDossiersRouteImport } from './routes/admin.dossiers'
+import { Route as AdminCotisationsRouteImport } from './routes/admin.cotisations'
 
 const VerificationRoute = VerificationRouteImport.update({
   id: '/verification',
   path: '/verification',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RegionsRoute = RegionsRouteImport.update({
-  id: '/regions',
-  path: '/regions',
+const MembreRoute = MembreRouteImport.update({
+  id: '/membre',
+  path: '/membre',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MembresRoute = MembresRouteImport.update({
-  id: '/membres',
-  path: '/membres',
+const FormulesRoute = FormulesRouteImport.update({
+  id: '/formules',
+  path: '/formules',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DossiersRoute = DossiersRouteImport.update({
-  id: '/dossiers',
-  path: '/dossiers',
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CotisationsRoute = CotisationsRouteImport.update({
-  id: '/cotisations',
-  path: '/cotisations',
+const DelegueRoute = DelegueRouteImport.update({
+  id: '/delegue',
+  path: '/delegue',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnexionRoute = ConnexionRouteImport.update({
+  id: '/connexion',
+  path: '/connexion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommentCaMarcheRoute = CommentCaMarcheRouteImport.update({
+  id: '/comment-ca-marche',
+  path: '/comment-ca-marche',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AProposRoute = AProposRouteImport.update({
+  id: '/a-propos',
+  path: '/a-propos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -46,66 +75,154 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminQuartiersRoute = AdminQuartiersRouteImport.update({
+  id: '/admin/quartiers',
+  path: '/admin/quartiers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminMembresRoute = AdminMembresRouteImport.update({
+  id: '/admin/membres',
+  path: '/admin/membres',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDossiersRoute = AdminDossiersRouteImport.update({
+  id: '/admin/dossiers',
+  path: '/admin/dossiers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminCotisationsRoute = AdminCotisationsRouteImport.update({
+  id: '/admin/cotisations',
+  path: '/admin/cotisations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/cotisations': typeof CotisationsRoute
-  '/dossiers': typeof DossiersRoute
-  '/membres': typeof MembresRoute
-  '/regions': typeof RegionsRoute
+  '/a-propos': typeof AProposRoute
+  '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/connexion': typeof ConnexionRoute
+  '/contact': typeof ContactRoute
+  '/delegue': typeof DelegueRoute
+  '/faq': typeof FaqRoute
+  '/formules': typeof FormulesRoute
+  '/membre': typeof MembreRoute
   '/verification': typeof VerificationRoute
+  '/admin/cotisations': typeof AdminCotisationsRoute
+  '/admin/dossiers': typeof AdminDossiersRoute
+  '/admin/membres': typeof AdminMembresRoute
+  '/admin/quartiers': typeof AdminQuartiersRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/cotisations': typeof CotisationsRoute
-  '/dossiers': typeof DossiersRoute
-  '/membres': typeof MembresRoute
-  '/regions': typeof RegionsRoute
+  '/a-propos': typeof AProposRoute
+  '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/connexion': typeof ConnexionRoute
+  '/contact': typeof ContactRoute
+  '/delegue': typeof DelegueRoute
+  '/faq': typeof FaqRoute
+  '/formules': typeof FormulesRoute
+  '/membre': typeof MembreRoute
   '/verification': typeof VerificationRoute
+  '/admin/cotisations': typeof AdminCotisationsRoute
+  '/admin/dossiers': typeof AdminDossiersRoute
+  '/admin/membres': typeof AdminMembresRoute
+  '/admin/quartiers': typeof AdminQuartiersRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/cotisations': typeof CotisationsRoute
-  '/dossiers': typeof DossiersRoute
-  '/membres': typeof MembresRoute
-  '/regions': typeof RegionsRoute
+  '/a-propos': typeof AProposRoute
+  '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/connexion': typeof ConnexionRoute
+  '/contact': typeof ContactRoute
+  '/delegue': typeof DelegueRoute
+  '/faq': typeof FaqRoute
+  '/formules': typeof FormulesRoute
+  '/membre': typeof MembreRoute
   '/verification': typeof VerificationRoute
+  '/admin/cotisations': typeof AdminCotisationsRoute
+  '/admin/dossiers': typeof AdminDossiersRoute
+  '/admin/membres': typeof AdminMembresRoute
+  '/admin/quartiers': typeof AdminQuartiersRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/cotisations'
-    | '/dossiers'
-    | '/membres'
-    | '/regions'
+    | '/a-propos'
+    | '/comment-ca-marche'
+    | '/connexion'
+    | '/contact'
+    | '/delegue'
+    | '/faq'
+    | '/formules'
+    | '/membre'
     | '/verification'
+    | '/admin/cotisations'
+    | '/admin/dossiers'
+    | '/admin/membres'
+    | '/admin/quartiers'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/cotisations'
-    | '/dossiers'
-    | '/membres'
-    | '/regions'
+    | '/a-propos'
+    | '/comment-ca-marche'
+    | '/connexion'
+    | '/contact'
+    | '/delegue'
+    | '/faq'
+    | '/formules'
+    | '/membre'
     | '/verification'
+    | '/admin/cotisations'
+    | '/admin/dossiers'
+    | '/admin/membres'
+    | '/admin/quartiers'
+    | '/admin'
   id:
     | '__root__'
     | '/'
-    | '/cotisations'
-    | '/dossiers'
-    | '/membres'
-    | '/regions'
+    | '/a-propos'
+    | '/comment-ca-marche'
+    | '/connexion'
+    | '/contact'
+    | '/delegue'
+    | '/faq'
+    | '/formules'
+    | '/membre'
     | '/verification'
+    | '/admin/cotisations'
+    | '/admin/dossiers'
+    | '/admin/membres'
+    | '/admin/quartiers'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CotisationsRoute: typeof CotisationsRoute
-  DossiersRoute: typeof DossiersRoute
-  MembresRoute: typeof MembresRoute
-  RegionsRoute: typeof RegionsRoute
+  AProposRoute: typeof AProposRoute
+  CommentCaMarcheRoute: typeof CommentCaMarcheRoute
+  ConnexionRoute: typeof ConnexionRoute
+  ContactRoute: typeof ContactRoute
+  DelegueRoute: typeof DelegueRoute
+  FaqRoute: typeof FaqRoute
+  FormulesRoute: typeof FormulesRoute
+  MembreRoute: typeof MembreRoute
   VerificationRoute: typeof VerificationRoute
+  AdminCotisationsRoute: typeof AdminCotisationsRoute
+  AdminDossiersRoute: typeof AdminDossiersRoute
+  AdminMembresRoute: typeof AdminMembresRoute
+  AdminQuartiersRoute: typeof AdminQuartiersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -117,32 +234,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerificationRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/regions': {
-      id: '/regions'
-      path: '/regions'
-      fullPath: '/regions'
-      preLoaderRoute: typeof RegionsRouteImport
+    '/membre': {
+      id: '/membre'
+      path: '/membre'
+      fullPath: '/membre'
+      preLoaderRoute: typeof MembreRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/membres': {
-      id: '/membres'
-      path: '/membres'
-      fullPath: '/membres'
-      preLoaderRoute: typeof MembresRouteImport
+    '/formules': {
+      id: '/formules'
+      path: '/formules'
+      fullPath: '/formules'
+      preLoaderRoute: typeof FormulesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dossiers': {
-      id: '/dossiers'
-      path: '/dossiers'
-      fullPath: '/dossiers'
-      preLoaderRoute: typeof DossiersRouteImport
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/cotisations': {
-      id: '/cotisations'
-      path: '/cotisations'
-      fullPath: '/cotisations'
-      preLoaderRoute: typeof CotisationsRouteImport
+    '/delegue': {
+      id: '/delegue'
+      path: '/delegue'
+      fullPath: '/delegue'
+      preLoaderRoute: typeof DelegueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connexion': {
+      id: '/connexion'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof ConnexionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/comment-ca-marche': {
+      id: '/comment-ca-marche'
+      path: '/comment-ca-marche'
+      fullPath: '/comment-ca-marche'
+      preLoaderRoute: typeof CommentCaMarcheRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/a-propos': {
+      id: '/a-propos'
+      path: '/a-propos'
+      fullPath: '/a-propos'
+      preLoaderRoute: typeof AProposRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -152,16 +297,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/quartiers': {
+      id: '/admin/quartiers'
+      path: '/admin/quartiers'
+      fullPath: '/admin/quartiers'
+      preLoaderRoute: typeof AdminQuartiersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/membres': {
+      id: '/admin/membres'
+      path: '/admin/membres'
+      fullPath: '/admin/membres'
+      preLoaderRoute: typeof AdminMembresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/dossiers': {
+      id: '/admin/dossiers'
+      path: '/admin/dossiers'
+      fullPath: '/admin/dossiers'
+      preLoaderRoute: typeof AdminDossiersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/cotisations': {
+      id: '/admin/cotisations'
+      path: '/admin/cotisations'
+      fullPath: '/admin/cotisations'
+      preLoaderRoute: typeof AdminCotisationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CotisationsRoute: CotisationsRoute,
-  DossiersRoute: DossiersRoute,
-  MembresRoute: MembresRoute,
-  RegionsRoute: RegionsRoute,
+  AProposRoute: AProposRoute,
+  CommentCaMarcheRoute: CommentCaMarcheRoute,
+  ConnexionRoute: ConnexionRoute,
+  ContactRoute: ContactRoute,
+  DelegueRoute: DelegueRoute,
+  FaqRoute: FaqRoute,
+  FormulesRoute: FormulesRoute,
+  MembreRoute: MembreRoute,
   VerificationRoute: VerificationRoute,
+  AdminCotisationsRoute: AdminCotisationsRoute,
+  AdminDossiersRoute: AdminDossiersRoute,
+  AdminMembresRoute: AdminMembresRoute,
+  AdminQuartiersRoute: AdminQuartiersRoute,
+  AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

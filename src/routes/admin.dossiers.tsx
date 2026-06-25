@@ -5,7 +5,7 @@ import { DossierStatusBadge } from "@/components/StatusBadge";
 import { useMemo, useState } from "react";
 import { FileText } from "lucide-react";
 
-export const Route = createFileRoute("/dossiers")({
+export const Route = createFileRoute("/admin/dossiers")({
   head: () => ({ meta: [{ title: "Dossiers décès — MuNAF" }] }),
   component: () => (
     <AppShell>
@@ -82,7 +82,7 @@ function DossiersPage() {
                     Déclaré le {d.declareLe} par <span className="text-foreground">{d.declarePar}</span>
                   </div>
                   <div className="mt-1 text-sm text-muted-foreground">
-                    {d.village}, {d.region} · Bénéficiaire : <span className="text-foreground">{d.beneficiaire}</span>
+                    Quartier {d.quartier}, Daloa · Bénéficiaire : <span className="text-foreground">{d.beneficiaire}</span>
                   </div>
                 </div>
                 <div className="text-right shrink-0">
