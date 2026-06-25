@@ -1,5 +1,6 @@
-// Deterministic mock data generator for MuNAF demo (1000 members)
-// All data is fictitious — to be removed once Lovable Cloud is connected.
+// Deterministic mock data generator for MuNAF demo
+// Zone pilote : Daloa, région du Haut-Sassandra, Côte d'Ivoire
+// 1000 membres fictifs — sera remplacé à la connexion de Lovable Cloud.
 
 export type MemberStatus = "actif" | "carence" | "suspendu" | "expire" | "resilie" | "decede";
 export type DossierStatus =
@@ -10,36 +11,72 @@ export type DossierStatus =
   | "assistance_versee"
   | "cloture";
 export type Formule = 100000 | 200000 | 300000 | 500000 | 1000000;
-export type Region =
-  | "Dakar"
-  | "Thiès"
-  | "Saint-Louis"
-  | "Diourbel"
-  | "Kaolack"
-  | "Ziguinchor"
-  | "Tambacounda"
-  | "Louga"
-  | "Fatick"
-  | "Matam";
 
-const PRENOMS_M = ["Mamadou","Ibrahima","Ousmane","Moussa","Cheikh","Abdoulaye","Modou","Aliou","Babacar","Pape","Lamine","Souleymane","Amadou","Demba","Bocar","Saliou","Ndiaga","Serigne","Assane","El Hadji"];
-const PRENOMS_F = ["Awa","Fatou","Aminata","Mariama","Aïssatou","Ndèye","Khady","Bineta","Rokhaya","Coumba","Astou","Sokhna","Adji","Mame","Diarra","Yacine","Maguette","Penda","Anta","Salimata"];
-const NOMS = ["Diop","Ndiaye","Fall","Sow","Ba","Sarr","Faye","Diallo","Mbaye","Sy","Gueye","Cissé","Sène","Thiam","Niang","Kane","Diagne","Camara","Touré","Dieng","Sakho","Lo","Ndoye","Wade"];
-const PROFESSIONS = ["Commerçant","Agriculteur","Enseignant","Couturière","Mécanicien","Chauffeur","Infirmière","Pêcheur","Maçon","Coiffeuse","Eleveur","Restauratrice","Tailleur","Vendeuse","Menuisier","Artisan","Fonctionnaire","Étudiant","Sage-femme","Boulanger"];
-const VILLAGES: Record<Region, string[]> = {
-  Dakar: ["Yoff","Ouakam","Pikine","Guédiawaye","Parcelles","Médina","Liberté"],
-  Thiès: ["Mbour","Tivaouane","Joal","Khombole","Pout","Notto"],
-  "Saint-Louis": ["Richard-Toll","Dagana","Podor","Sor","Ross-Béthio"],
-  Diourbel: ["Touba","Mbacké","Bambey","Ndindy"],
-  Kaolack: ["Nioro","Guinguinéo","Kaffrine","Médina Sabakh"],
-  Ziguinchor: ["Bignona","Oussouye","Cap Skirring","Diouloulou"],
-  Tambacounda: ["Bakel","Goudiry","Kédougou","Kidira"],
-  Louga: ["Kébémer","Linguère","Dahra","Sakal"],
-  Fatick: ["Foundiougne","Gossas","Sokone","Passy"],
-  Matam: ["Kanel","Ranérou","Ourossogui","Thilogne"],
-};
-const REGIONS = Object.keys(VILLAGES) as Region[];
-const ASSOCIATIONS = ["Mutuelle Touba Solidarité","Association des Ressortissants de Pikine","Coopérative Agricole de Mbour","Mutuelle Sainte-Famille","Confrérie de Tivaouane","Association Villageoise de Bambey","Groupement des Pêcheurs de Joal","Union des Femmes de Kaolack","Cercle des Anciens de Saint-Louis","Solidarité Bignona"];
+// Quartiers urbains de Daloa + sous-préfectures rurales du Haut-Sassandra
+export const QUARTIERS = [
+  "Tazibouo",
+  "Lobia",
+  "Garage",
+  "Abattoir",
+  "Soleil",
+  "Orly",
+  "Kennedy",
+  "Marais",
+  "Commerce",
+  "Piscine",
+  "Tagbasso",
+  "Dioulabougou",
+  "Huberson",
+  "Évêché",
+  "Belleville",
+  "Gbeuli",
+  "Baoulé",
+  // Sous-préfectures
+  "Gboguhé",
+  "Zaïbo",
+  "Gonaté",
+  "Bédiala",
+  "Gadouan",
+] as const;
+export type Quartier = (typeof QUARTIERS)[number];
+
+const PRENOMS_M = [
+  "Konan","Koffi","Yao","Kouassi","Kouadio","Kouamé","N'Guessan","Aboubacar","Ibrahim","Moussa",
+  "Mamadou","Souleymane","Ousmane","Adama","Sékou","Lassina","Drissa","Issa","Bakary","Vakaba",
+  "Sylvain","Désiré","Hervé","Serge","Patrice","Émile","Jonas","Aristide","Bertin","Cyrille",
+];
+const PRENOMS_F = [
+  "Akissi","Affoué","Adjoua","Amenan","Aya","Adjo","Affoua","Mariam","Aminata","Fatoumata",
+  "Awa","Salimata","Kadiatou","Hawa","Massandjé","Korotoumou","Djénéba","Rokia","Bintou","Nafissatou",
+  "Adèle","Brigitte","Clarisse","Estelle","Sylvie","Marlène","Pélagie","Reine","Solange","Yolande",
+];
+const NOMS = [
+  "Bamba","Coulibaly","Touré","Ouattara","Bakayoko","Doumbia","Diaby","Konaté","Traoré","Kéita",
+  "Diomandé","Soro","Cissé","Diakité","Fofana","Sanogo","Berté","Camara","Diallo","Konan",
+  "Koffi","Yao","Kouassi","Kouadio","N'Guessan","Goué","Gnamké","Tapé","Zadi","Bohoussou",
+  "Gnagne","Ziri","Béhi","Goré","Irié","Loukou","Niamké","Tia","Djédjé","Gbagbo",
+];
+const PROFESSIONS = [
+  "Cultivateur de cacao","Cultivatrice","Commerçant·e","Couturière","Mécanicien","Chauffeur de taxi",
+  "Maraîcher","Vendeuse marché","Coiffeuse","Menuisier","Maçon","Tailleur","Enseignant·e",
+  "Infirmier·ère","Sage-femme","Pisteur cacao","Éleveur","Pêcheur","Chargeur (gare routière)",
+  "Boutiquier","Restauratrice","Réparateur moto","Boulanger","Tisserande","Apprenti·e",
+  "Fonctionnaire","Agent de santé communautaire","Pasteur","Imam","Étudiant·e",
+];
+const ASSOCIATIONS = [
+  "Mutuelle des Cultivateurs de Tazibouo",
+  "Association des Femmes du Marché Central",
+  "Fraternité Évêché-Belleville",
+  "Coopérative Agricole de Gonaté",
+  "Union des Jeunes de Lobia",
+  "Mutuelle des Transporteurs Daloa-Gare",
+  "Association Ressortissants de Bédiala",
+  "Solidarité Quartier Soleil",
+  "Mutuelle des Couturières de Commerce",
+  "Confrérie de Tagbasso",
+  "Association des Pisteurs de Gboguhé",
+  "Groupement Féminin de Zaïbo",
+];
 
 function mulberry32(seed: number) {
   return function () {
@@ -60,6 +97,16 @@ function dateMinus(days: number): string {
   return d.toISOString().slice(0, 10);
 }
 
+// Téléphones Côte d'Ivoire : préfixes opérateurs 07 (Orange), 05 (MTN), 01 (Moov)
+function ivorianPhone(rng: () => number): string {
+  const op = pick(rng, ["07", "05", "01"]);
+  const a = String(Math.floor(rng() * 90) + 10);
+  const b = String(Math.floor(rng() * 90) + 10);
+  const c = String(Math.floor(rng() * 90) + 10);
+  const d = String(Math.floor(rng() * 90) + 10);
+  return `+225 ${op} ${a} ${b} ${c} ${d}`;
+}
+
 export interface Member {
   id: string;
   matricule: string;
@@ -70,14 +117,14 @@ export interface Member {
   age: number;
   telephone: string;
   profession: string;
-  village: string;
-  region: Region;
+  quartier: Quartier;
+  region: "Daloa";
   association: string;
   formule: Formule;
   primeAnnuelle: number;
   dateInscription: string;
   dateFinCarence: string;
-  joursCarenceRestants: number; // negative if finished
+  joursCarenceRestants: number;
   status: MemberStatus;
   cotisationsAJour: boolean;
   totalCotise: number;
@@ -95,8 +142,7 @@ export interface Dossier {
   dateDeces: string;
   declareLe: string;
   declarePar: string;
-  region: Region;
-  village: string;
+  quartier: Quartier;
   status: DossierStatus;
   montantAssistance: number;
   beneficiaire: string;
@@ -114,13 +160,15 @@ export interface Cotisation {
   statut: "réussi" | "en_attente" | "échoué";
 }
 
-const FORMULES: { capital: Formule; prime: number }[] = [
-  { capital: 100000, prime: 2500 },
-  { capital: 200000, prime: 5000 },
-  { capital: 300000, prime: 7500 },
-  { capital: 500000, prime: 12500 },
-  { capital: 1000000, prime: 25000 },
+const FORMULES: { capital: Formule; prime: number; nom: string }[] = [
+  { capital: 100000, prime: 2500, nom: "Essentielle" },
+  { capital: 200000, prime: 5000, nom: "Familiale" },
+  { capital: 300000, prime: 7500, nom: "Sérénité" },
+  { capital: 500000, prime: 12500, nom: "Prestige" },
+  { capital: 1000000, prime: 25000, nom: "Patrimoine" },
 ];
+
+export const FORMULES_PUBLIC = FORMULES;
 
 let _members: Member[] | null = null;
 let _dossiers: Dossier[] | null = null;
@@ -134,45 +182,42 @@ export function getMembers(): Member[] {
     const sexe: "M" | "F" = rng() < 0.55 ? "M" : "F";
     const prenom = pick(rng, sexe === "M" ? PRENOMS_M : PRENOMS_F);
     const nom = pick(rng, NOMS);
-    const region = pick(rng, REGIONS);
-    const village = pick(rng, VILLAGES[region]);
+    const quartier = pick(rng, QUARTIERS);
     const formuleObj = pick(rng, FORMULES);
     const joursDepuisInscription = Math.floor(rng() * 900) + 1;
     const dateInscription = dateMinus(joursDepuisInscription);
     const dateFinCarence = dateMinus(joursDepuisInscription - 90);
     const joursCarenceRestants = 90 - joursDepuisInscription;
 
-    // Status distribution
     const r = rng();
     let status: MemberStatus;
-    if (joursDepuisInscription < 90 && r < 0.85) status = "carence";
-    else if (r < 0.62) status = "actif";
+    if (joursDepuisInscription < 90 && r < 0.9) status = "carence";
+    else if (r < 0.6) status = "actif";
     else if (r < 0.72) status = "actif";
     else if (r < 0.82) status = "carence";
-    else if (r < 0.88) status = "suspendu";
-    else if (r < 0.93) status = "expire";
-    else if (r < 0.96) status = "resilie";
+    else if (r < 0.89) status = "suspendu";
+    else if (r < 0.94) status = "expire";
+    else if (r < 0.97) status = "resilie";
     else status = "decede";
 
     const moisCotises = Math.min(Math.floor(joursDepuisInscription / 30), 24);
     const totalCotise = Math.round((formuleObj.prime / 12) * moisCotises);
 
-    // Photo: use deterministic pravatar
     const photoId = (i % 70) + 1;
     const photo = `https://i.pravatar.cc/200?img=${photoId}`;
 
     arr.push({
       id: `m-${i + 1}`,
-      matricule: `MNF-${String(2024).slice(2)}-${String(i + 1).padStart(5, "0")}`,
+      matricule: `MNF-DLA-${String(i + 1).padStart(5, "0")}`,
       photo,
       nom,
       prenom,
       sexe,
       age: 22 + Math.floor(rng() * 50),
-      telephone: `+221 ${77 + Math.floor(rng() * 3)} ${String(Math.floor(rng() * 900) + 100)} ${String(Math.floor(rng() * 90) + 10)} ${String(Math.floor(rng() * 90) + 10)}`,
+      telephone: ivorianPhone(rng),
       profession: pick(rng, PROFESSIONS),
-      village,
-      region,
+      quartier,
+      region: "Daloa",
       association: pick(rng, ASSOCIATIONS),
       formule: formuleObj.capital,
       primeAnnuelle: formuleObj.prime,
@@ -201,16 +246,15 @@ export function getDossiers(): Dossier[] {
     const jours = Math.floor(rng() * 120);
     return {
       id: `d-${i + 1}`,
-      numero: `DEC-2026-${String(i + 1).padStart(4, "0")}`,
+      numero: `DEC-DLA-2026-${String(i + 1).padStart(4, "0")}`,
       memberId: m.id,
       memberNom: `${m.prenom} ${m.nom}`,
       memberPhoto: m.photo,
       formule: m.formule,
       dateDeces: dateMinus(jours + 5),
       declareLe: dateMinus(jours),
-      declarePar: pick(rng, ["Délégué local","Ayant droit","Administrateur"]),
-      region: m.region,
-      village: m.village,
+      declarePar: pick(rng, ["Délégué de quartier","Ayant droit","Chef de famille","Imam","Pasteur"]),
+      quartier: m.quartier,
       status,
       montantAssistance: m.formule,
       beneficiaire: m.ayantDroitPrincipal,
@@ -262,9 +306,9 @@ export function getStats() {
     .reduce((s, d) => s + d.montantAssistance, 0);
 
   const byStatus = (s: MemberStatus) => members.filter((m) => m.status === s).length;
-  const byRegion = REGIONS.map((r) => ({
-    region: r,
-    count: members.filter((m) => m.region === r).length,
+  const byQuartier = QUARTIERS.map((q) => ({
+    quartier: q,
+    count: members.filter((m) => m.quartier === q).length,
   }));
 
   return {
@@ -280,7 +324,9 @@ export function getStats() {
     dossiersTotal: dossiers.length,
     dossiersEnCours: dossiers.filter((d) => !["assistance_versee","cloture"].includes(d.status)).length,
     assistancesVersees,
-    byRegion,
+    byQuartier,
+    // Compat
+    byRegion: byQuartier.map((b) => ({ region: b.quartier, count: b.count })),
   };
 }
 

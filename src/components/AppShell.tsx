@@ -10,16 +10,18 @@ import {
   Settings,
   Search,
   ShieldCheck,
+  Home,
 } from "lucide-react";
 import logo from "@/assets/munaf-logo.png";
 
 const NAV = [
-  { to: "/", label: "Tableau de bord", icon: LayoutDashboard },
-  { to: "/membres", label: "Membres", icon: Users },
-  { to: "/cotisations", label: "Cotisations", icon: Wallet },
-  { to: "/dossiers", label: "Dossiers décès", icon: FileText },
-  { to: "/regions", label: "Régions & délégués", icon: MapPin },
+  { to: "/admin", label: "Tableau de bord", icon: LayoutDashboard },
+  { to: "/admin/membres", label: "Membres", icon: Users },
+  { to: "/admin/cotisations", label: "Cotisations", icon: Wallet },
+  { to: "/admin/dossiers", label: "Dossiers décès", icon: FileText },
+  { to: "/admin/quartiers", label: "Quartiers & délégués", icon: MapPin },
   { to: "/verification", label: "Portail public", icon: ShieldCheck },
+  { to: "/", label: "Site public", icon: Home },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -30,22 +32,25 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Sidebar */}
       <aside className="hidden lg:flex w-64 shrink-0 flex-col bg-sidebar text-sidebar-foreground">
         <div className="px-5 py-5 flex items-center gap-3 border-b border-sidebar-border">
-          <div className="size-11 rounded-xl bg-white/95 p-1 flex items-center justify-center overflow-hidden">
-            <img src={logo} alt="MuNAF" className="size-full object-contain" />
-          </div>
+          <img src={logo} alt="MuNAF" className="size-12 object-contain" />
           <div>
             <div className="font-display font-bold text-lg leading-tight">
               Mu<span className="text-gold">NAF</span>
             </div>
             <div className="text-[10px] uppercase tracking-wider text-sidebar-foreground/60">
-              Console Admin
+              Console Admin · Daloa
             </div>
           </div>
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-0.5">
           {NAV.map(({ to, label, icon: Icon }) => {
-            const active = to === "/" ? pathname === "/" : pathname.startsWith(to);
+            const active =
+              to === "/admin"
+                ? pathname === "/admin"
+                : to === "/"
+                  ? pathname === "/"
+                  : pathname.startsWith(to);
             return (
               <Link
                 key={to}
@@ -64,7 +69,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
 
         <div className="p-4 mx-3 mb-4 rounded-xl bg-sidebar-accent text-sidebar-accent-foreground text-xs">
-          <div className="font-semibold text-gold mb-1">Données de démonstration</div>
+          <div className="font-semibold text-gold mb-1">Zone pilote — Daloa</div>
           <p className="text-sidebar-foreground/70 leading-relaxed">
             1 000 membres fictifs. Sera remplacé à la connexion de Lovable Cloud.
           </p>
@@ -74,9 +79,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0">
         <header className="h-16 border-b bg-card flex items-center px-4 lg:px-8 gap-4 sticky top-0 z-10">
-          <div className="lg:hidden size-9 rounded-lg bg-primary p-1 flex items-center justify-center">
-            <img src={logo} alt="MuNAF" className="size-full object-contain" />
-          </div>
+          <img src={logo} alt="MuNAF" className="lg:hidden size-9 object-contain" />
           <div className="relative flex-1 max-w-md">
             <Search className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
@@ -94,7 +97,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-3 pl-3 border-l">
             <div className="text-right hidden sm:block">
               <div className="text-sm font-medium leading-tight">Super Admin</div>
-              <div className="text-xs text-muted-foreground">MuNAF National</div>
+              <div className="text-xs text-muted-foreground">MuNAF · Daloa</div>
             </div>
             <div className="size-9 rounded-full bg-gold-gradient text-primary font-bold flex items-center justify-center text-sm">
               SA
