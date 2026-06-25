@@ -3,7 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { getCotisations, formatFcfa } from "@/lib/mock-data";
 import { Wallet, CheckCircle2, Clock, XCircle } from "lucide-react";
 
-export const Route = createFileRoute("/cotisations")({
+export const Route = createFileRoute("/admin/cotisations")({
   head: () => ({ meta: [{ title: "Cotisations — MuNAF" }] }),
   component: () => (
     <AppShell>

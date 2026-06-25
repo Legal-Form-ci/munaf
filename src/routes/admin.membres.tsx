@@ -5,7 +5,7 @@ import { MemberStatusBadge } from "@/components/StatusBadge";
 import { useMemo, useState } from "react";
 import { Search, Filter, Download, UserPlus } from "lucide-react";
 
-export const Route = createFileRoute("/membres")({
+export const Route = createFileRoute("/admin/membres")({
   head: () => ({ meta: [{ title: "Membres — MuNAF" }] }),
   component: () => (
     <AppShell>

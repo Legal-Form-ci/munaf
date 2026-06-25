@@ -10,35 +10,15 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerificationRouteImport } from './routes/verification'
-import { Route as RegionsRouteImport } from './routes/regions'
-import { Route as MembresRouteImport } from './routes/membres'
-import { Route as DossiersRouteImport } from './routes/dossiers'
-import { Route as CotisationsRouteImport } from './routes/cotisations'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminQuartiersRouteImport } from './routes/admin.quartiers'
+import { Route as AdminMembresRouteImport } from './routes/admin.membres'
+import { Route as AdminDossiersRouteImport } from './routes/admin.dossiers'
+import { Route as AdminCotisationsRouteImport } from './routes/admin.cotisations'
 
 const VerificationRoute = VerificationRouteImport.update({
   id: '/verification',
   path: '/verification',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RegionsRoute = RegionsRouteImport.update({
-  id: '/regions',
-  path: '/regions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MembresRoute = MembresRouteImport.update({
-  id: '/membres',
-  path: '/membres',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DossiersRoute = DossiersRouteImport.update({
-  id: '/dossiers',
-  path: '/dossiers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CotisationsRoute = CotisationsRouteImport.update({
-  id: '/cotisations',
-  path: '/cotisations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -46,66 +26,86 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminQuartiersRoute = AdminQuartiersRouteImport.update({
+  id: '/admin/quartiers',
+  path: '/admin/quartiers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminMembresRoute = AdminMembresRouteImport.update({
+  id: '/admin/membres',
+  path: '/admin/membres',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDossiersRoute = AdminDossiersRouteImport.update({
+  id: '/admin/dossiers',
+  path: '/admin/dossiers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminCotisationsRoute = AdminCotisationsRouteImport.update({
+  id: '/admin/cotisations',
+  path: '/admin/cotisations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/cotisations': typeof CotisationsRoute
-  '/dossiers': typeof DossiersRoute
-  '/membres': typeof MembresRoute
-  '/regions': typeof RegionsRoute
   '/verification': typeof VerificationRoute
+  '/admin/cotisations': typeof AdminCotisationsRoute
+  '/admin/dossiers': typeof AdminDossiersRoute
+  '/admin/membres': typeof AdminMembresRoute
+  '/admin/quartiers': typeof AdminQuartiersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/cotisations': typeof CotisationsRoute
-  '/dossiers': typeof DossiersRoute
-  '/membres': typeof MembresRoute
-  '/regions': typeof RegionsRoute
   '/verification': typeof VerificationRoute
+  '/admin/cotisations': typeof AdminCotisationsRoute
+  '/admin/dossiers': typeof AdminDossiersRoute
+  '/admin/membres': typeof AdminMembresRoute
+  '/admin/quartiers': typeof AdminQuartiersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/cotisations': typeof CotisationsRoute
-  '/dossiers': typeof DossiersRoute
-  '/membres': typeof MembresRoute
-  '/regions': typeof RegionsRoute
   '/verification': typeof VerificationRoute
+  '/admin/cotisations': typeof AdminCotisationsRoute
+  '/admin/dossiers': typeof AdminDossiersRoute
+  '/admin/membres': typeof AdminMembresRoute
+  '/admin/quartiers': typeof AdminQuartiersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/cotisations'
-    | '/dossiers'
-    | '/membres'
-    | '/regions'
     | '/verification'
+    | '/admin/cotisations'
+    | '/admin/dossiers'
+    | '/admin/membres'
+    | '/admin/quartiers'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/cotisations'
-    | '/dossiers'
-    | '/membres'
-    | '/regions'
     | '/verification'
+    | '/admin/cotisations'
+    | '/admin/dossiers'
+    | '/admin/membres'
+    | '/admin/quartiers'
   id:
     | '__root__'
     | '/'
-    | '/cotisations'
-    | '/dossiers'
-    | '/membres'
-    | '/regions'
     | '/verification'
+    | '/admin/cotisations'
+    | '/admin/dossiers'
+    | '/admin/membres'
+    | '/admin/quartiers'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CotisationsRoute: typeof CotisationsRoute
-  DossiersRoute: typeof DossiersRoute
-  MembresRoute: typeof MembresRoute
-  RegionsRoute: typeof RegionsRoute
   VerificationRoute: typeof VerificationRoute
+  AdminCotisationsRoute: typeof AdminCotisationsRoute
+  AdminDossiersRoute: typeof AdminDossiersRoute
+  AdminMembresRoute: typeof AdminMembresRoute
+  AdminQuartiersRoute: typeof AdminQuartiersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -117,34 +117,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerificationRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/regions': {
-      id: '/regions'
-      path: '/regions'
-      fullPath: '/regions'
-      preLoaderRoute: typeof RegionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/membres': {
-      id: '/membres'
-      path: '/membres'
-      fullPath: '/membres'
-      preLoaderRoute: typeof MembresRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dossiers': {
-      id: '/dossiers'
-      path: '/dossiers'
-      fullPath: '/dossiers'
-      preLoaderRoute: typeof DossiersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cotisations': {
-      id: '/cotisations'
-      path: '/cotisations'
-      fullPath: '/cotisations'
-      preLoaderRoute: typeof CotisationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -152,27 +124,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/quartiers': {
+      id: '/admin/quartiers'
+      path: '/admin/quartiers'
+      fullPath: '/admin/quartiers'
+      preLoaderRoute: typeof AdminQuartiersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/membres': {
+      id: '/admin/membres'
+      path: '/admin/membres'
+      fullPath: '/admin/membres'
+      preLoaderRoute: typeof AdminMembresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/dossiers': {
+      id: '/admin/dossiers'
+      path: '/admin/dossiers'
+      fullPath: '/admin/dossiers'
+      preLoaderRoute: typeof AdminDossiersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/cotisations': {
+      id: '/admin/cotisations'
+      path: '/admin/cotisations'
+      fullPath: '/admin/cotisations'
+      preLoaderRoute: typeof AdminCotisationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CotisationsRoute: CotisationsRoute,
-  DossiersRoute: DossiersRoute,
-  MembresRoute: MembresRoute,
-  RegionsRoute: RegionsRoute,
   VerificationRoute: VerificationRoute,
+  AdminCotisationsRoute: AdminCotisationsRoute,
+  AdminDossiersRoute: AdminDossiersRoute,
+  AdminMembresRoute: AdminMembresRoute,
+  AdminQuartiersRoute: AdminQuartiersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -5,7 +5,7 @@ import { DossierStatusBadge } from "@/components/StatusBadge";
 import { useMemo, useState } from "react";
 import { FileText } from "lucide-react";
 
-export const Route = createFileRoute("/dossiers")({
+export const Route = createFileRoute("/admin/dossiers")({
   head: () => ({ meta: [{ title: "Dossiers décès — MuNAF" }] }),
   component: () => (
     <AppShell>

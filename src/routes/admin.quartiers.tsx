@@ -3,7 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { getMembers, getStats, formatFcfa } from "@/lib/mock-data";
 import { MapPin, Users } from "lucide-react";
 
-export const Route = createFileRoute("/regions")({
+export const Route = createFileRoute("/admin/quartiers")({
   head: () => ({ meta: [{ title: "Régions — MuNAF" }] }),
   component: () => (
     <AppShell>
