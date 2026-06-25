@@ -9,8 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerificationRouteImport } from './routes/verification'
+import { Route as RegionsRouteImport } from './routes/regions'
+import { Route as MembresRouteImport } from './routes/membres'
+import { Route as DossiersRouteImport } from './routes/dossiers'
+import { Route as CotisationsRouteImport } from './routes/cotisations'
 import { Route as IndexRouteImport } from './routes/index'
 
+const VerificationRoute = VerificationRouteImport.update({
+  id: '/verification',
+  path: '/verification',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegionsRoute = RegionsRouteImport.update({
+  id: '/regions',
+  path: '/regions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MembresRoute = MembresRouteImport.update({
+  id: '/membres',
+  path: '/membres',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DossiersRoute = DossiersRouteImport.update({
+  id: '/dossiers',
+  path: '/dossiers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CotisationsRoute = CotisationsRouteImport.update({
+  id: '/cotisations',
+  path: '/cotisations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +49,102 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cotisations': typeof CotisationsRoute
+  '/dossiers': typeof DossiersRoute
+  '/membres': typeof MembresRoute
+  '/regions': typeof RegionsRoute
+  '/verification': typeof VerificationRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cotisations': typeof CotisationsRoute
+  '/dossiers': typeof DossiersRoute
+  '/membres': typeof MembresRoute
+  '/regions': typeof RegionsRoute
+  '/verification': typeof VerificationRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cotisations': typeof CotisationsRoute
+  '/dossiers': typeof DossiersRoute
+  '/membres': typeof MembresRoute
+  '/regions': typeof RegionsRoute
+  '/verification': typeof VerificationRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/cotisations'
+    | '/dossiers'
+    | '/membres'
+    | '/regions'
+    | '/verification'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/cotisations'
+    | '/dossiers'
+    | '/membres'
+    | '/regions'
+    | '/verification'
+  id:
+    | '__root__'
+    | '/'
+    | '/cotisations'
+    | '/dossiers'
+    | '/membres'
+    | '/regions'
+    | '/verification'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CotisationsRoute: typeof CotisationsRoute
+  DossiersRoute: typeof DossiersRoute
+  MembresRoute: typeof MembresRoute
+  RegionsRoute: typeof RegionsRoute
+  VerificationRoute: typeof VerificationRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verification': {
+      id: '/verification'
+      path: '/verification'
+      fullPath: '/verification'
+      preLoaderRoute: typeof VerificationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/regions': {
+      id: '/regions'
+      path: '/regions'
+      fullPath: '/regions'
+      preLoaderRoute: typeof RegionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/membres': {
+      id: '/membres'
+      path: '/membres'
+      fullPath: '/membres'
+      preLoaderRoute: typeof MembresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dossiers': {
+      id: '/dossiers'
+      path: '/dossiers'
+      fullPath: '/dossiers'
+      preLoaderRoute: typeof DossiersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cotisations': {
+      id: '/cotisations'
+      path: '/cotisations'
+      fullPath: '/cotisations'
+      preLoaderRoute: typeof CotisationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,17 +157,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CotisationsRoute: CotisationsRoute,
+  DossiersRoute: DossiersRoute,
+  MembresRoute: MembresRoute,
+  RegionsRoute: RegionsRoute,
+  VerificationRoute: VerificationRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
