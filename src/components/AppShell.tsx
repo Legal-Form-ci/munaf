@@ -1,4 +1,5 @@
-import { Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import {
   LayoutDashboard,
   Users,
@@ -21,7 +22,7 @@ const NAV = [
   { to: "/verification", label: "Portail public", icon: ShieldCheck },
 ] as const;
 
-export function AppShell() {
+export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
