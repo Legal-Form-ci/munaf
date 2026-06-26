@@ -14,16 +14,334 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cotisations: {
+        Row: {
+          created_at: string
+          date_paiement: string | null
+          enregistre_par: string | null
+          id: string
+          membre_id: string
+          mois: string
+          montant: number
+          moyen: string | null
+          reference: string | null
+          status: Database["public"]["Enums"]["cotisation_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date_paiement?: string | null
+          enregistre_par?: string | null
+          id?: string
+          membre_id: string
+          mois: string
+          montant: number
+          moyen?: string | null
+          reference?: string | null
+          status?: Database["public"]["Enums"]["cotisation_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date_paiement?: string | null
+          enregistre_par?: string | null
+          id?: string
+          membre_id?: string
+          mois?: string
+          montant?: number
+          moyen?: string | null
+          reference?: string | null
+          status?: Database["public"]["Enums"]["cotisation_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cotisations_membre_id_fkey"
+            columns: ["membre_id"]
+            isOneToOne: false
+            referencedRelation: "membres"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dossier_documents: {
+        Row: {
+          created_at: string
+          dossier_id: string
+          id: string
+          storage_path: string
+          type: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          dossier_id: string
+          id?: string
+          storage_path: string
+          type: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          dossier_id?: string
+          id?: string
+          storage_path?: string
+          type?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dossier_documents_dossier_id_fkey"
+            columns: ["dossier_id"]
+            isOneToOne: false
+            referencedRelation: "dossiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dossiers: {
+        Row: {
+          cause: string | null
+          created_at: string
+          date_deces: string
+          date_versement: string | null
+          declarant_lien: string | null
+          declarant_nom: string
+          declarant_telephone: string
+          delegue_id: string | null
+          id: string
+          lieu_deces: string | null
+          membre_id: string
+          montant_assistance: number | null
+          notes: string | null
+          numero: string
+          reference_versement: string | null
+          status: Database["public"]["Enums"]["dossier_status"]
+          traite_par: string | null
+          updated_at: string
+        }
+        Insert: {
+          cause?: string | null
+          created_at?: string
+          date_deces: string
+          date_versement?: string | null
+          declarant_lien?: string | null
+          declarant_nom: string
+          declarant_telephone: string
+          delegue_id?: string | null
+          id?: string
+          lieu_deces?: string | null
+          membre_id: string
+          montant_assistance?: number | null
+          notes?: string | null
+          numero: string
+          reference_versement?: string | null
+          status?: Database["public"]["Enums"]["dossier_status"]
+          traite_par?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cause?: string | null
+          created_at?: string
+          date_deces?: string
+          date_versement?: string | null
+          declarant_lien?: string | null
+          declarant_nom?: string
+          declarant_telephone?: string
+          delegue_id?: string | null
+          id?: string
+          lieu_deces?: string | null
+          membre_id?: string
+          montant_assistance?: number | null
+          notes?: string | null
+          numero?: string
+          reference_versement?: string | null
+          status?: Database["public"]["Enums"]["dossier_status"]
+          traite_par?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dossiers_membre_id_fkey"
+            columns: ["membre_id"]
+            isOneToOne: false
+            referencedRelation: "membres"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      membres: {
+        Row: {
+          association: string | null
+          created_at: string
+          date_adhesion: string
+          date_deces: string | null
+          date_naissance: string | null
+          delegue_id: string | null
+          email: string | null
+          fin_carence: string | null
+          formule: Database["public"]["Enums"]["formule"]
+          id: string
+          matricule: string
+          nom: string
+          photo_url: string | null
+          prenom: string
+          profession: string | null
+          quartier: string
+          region: string
+          sexe: string
+          status: Database["public"]["Enums"]["member_status"]
+          telephone: string
+          updated_at: string
+          user_id: string | null
+          ville: string
+        }
+        Insert: {
+          association?: string | null
+          created_at?: string
+          date_adhesion?: string
+          date_deces?: string | null
+          date_naissance?: string | null
+          delegue_id?: string | null
+          email?: string | null
+          fin_carence?: string | null
+          formule?: Database["public"]["Enums"]["formule"]
+          id?: string
+          matricule: string
+          nom: string
+          photo_url?: string | null
+          prenom: string
+          profession?: string | null
+          quartier: string
+          region?: string
+          sexe: string
+          status?: Database["public"]["Enums"]["member_status"]
+          telephone: string
+          updated_at?: string
+          user_id?: string | null
+          ville?: string
+        }
+        Update: {
+          association?: string | null
+          created_at?: string
+          date_adhesion?: string
+          date_deces?: string | null
+          date_naissance?: string | null
+          delegue_id?: string | null
+          email?: string | null
+          fin_carence?: string | null
+          formule?: Database["public"]["Enums"]["formule"]
+          id?: string
+          matricule?: string
+          nom?: string
+          photo_url?: string | null
+          prenom?: string
+          profession?: string | null
+          quartier?: string
+          region?: string
+          sexe?: string
+          status?: Database["public"]["Enums"]["member_status"]
+          telephone?: string
+          updated_at?: string
+          user_id?: string | null
+          ville?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      verifier_membre: {
+        Args: { _query: string }
+        Returns: {
+          date_adhesion: string
+          formule: Database["public"]["Enums"]["formule"]
+          matricule: string
+          nom: string
+          photo_url: string
+          prenom: string
+          quartier: string
+          status: Database["public"]["Enums"]["member_status"]
+          ville: string
+        }[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "delegue" | "membre"
+      cotisation_status: "payee" | "en_attente" | "en_retard"
+      dossier_status:
+        | "declare"
+        | "verification"
+        | "valide"
+        | "transmis"
+        | "assistance_versee"
+        | "cloture"
+        | "rejete"
+      formule: "F100" | "F200" | "F300" | "F500" | "F1000"
+      member_status:
+        | "actif"
+        | "carence"
+        | "suspendu"
+        | "expire"
+        | "resilie"
+        | "decede"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +468,27 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "delegue", "membre"],
+      cotisation_status: ["payee", "en_attente", "en_retard"],
+      dossier_status: [
+        "declare",
+        "verification",
+        "valide",
+        "transmis",
+        "assistance_versee",
+        "cloture",
+        "rejete",
+      ],
+      formule: ["F100", "F200", "F300", "F500", "F1000"],
+      member_status: [
+        "actif",
+        "carence",
+        "suspendu",
+        "expire",
+        "resilie",
+        "decede",
+      ],
+    },
   },
 } as const
