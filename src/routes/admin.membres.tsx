@@ -146,18 +146,18 @@ function MemberDrawer({ member, onClose, onSave }: { member: any; onClose: () =>
             </label>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Prénom" value={form.prenom} onChange={(v) => upd("prenom", v)} />
-            <Field label="Nom" value={form.nom} onChange={(v) => upd("nom", v)} />
+            <Field label="Prénom" value={form.prenom} onChange={(v: string) => upd("prenom", v)} />
+            <Field label="Nom" value={form.nom} onChange={(v: string) => upd("nom", v)} />
           </div>
-          <Field label="Téléphone" value={form.telephone} onChange={(v) => upd("telephone", v)} />
-          <Field label="Profession" value={form.profession} onChange={(v) => upd("profession", v)} />
+          <Field label="Téléphone" value={form.telephone} onChange={(v: string) => upd("telephone", v)} />
+          <Field label="Profession" value={form.profession} onChange={(v: string) => upd("profession", v)} />
           <div className="grid grid-cols-2 gap-3">
-            <Select label="Sexe" value={form.sexe} onChange={(v) => upd("sexe", v)} options={[["M","Masculin"],["F","Féminin"]]} />
-            <Field label="Quartier" value={form.quartier} onChange={(v) => upd("quartier", v)} />
+            <Select label="Sexe" value={form.sexe} onChange={(v: string) => upd("sexe", v)} options={[["M","Masculin"],["F","Féminin"]]} />
+            <Field label="Quartier" value={form.quartier} onChange={(v: string) => upd("quartier", v)} />
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <Select label="Formule" value={form.formule} onChange={(v) => upd("formule", v)} options={FORMULES.map((f) => [f, formatFcfa(FORMULE_VALUE[f])])} />
-            <Select label="Statut" value={form.status} onChange={(v) => upd("status", v)} options={STATUSES.map((s) => [s, STATUS_LABEL[s]])} />
+            <Select label="Formule" value={form.formule} onChange={(v: string) => upd("formule", v)} options={FORMULES.map((f) => [f, formatFcfa(FORMULE_VALUE[f])])} />
+            <Select label="Statut" value={form.status} onChange={(v: string) => upd("status", v)} options={STATUSES.map((s) => [s, STATUS_LABEL[s]])} />
           </div>
           <button type="submit" className="w-full h-11 rounded-lg bg-primary text-primary-foreground font-semibold mt-2">Enregistrer</button>
         </form>
