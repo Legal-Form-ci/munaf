@@ -1,70 +1,35 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { getMembers, getStats, formatFcfa } from "@/lib/mock-data";
-import { MapPin, Users } from "lucide-react";
+import { useQuartiersStats } from "@/lib/api";
+import { Loader2, MapPin } from "lucide-react";
 
 export const Route = createFileRoute("/admin/quartiers")({
-  head: () => ({ meta: [{ title: "Quartiers & délégués — MuNAF Daloa" }] }),
-  component: () => (
-    <AppShell>
-      <QuartiersPage />
-    </AppShell>
-  ),
+  head: () => ({ meta: [{ title: "Quartiers — MuNAF" }] }),
+  component: () => (<AppShell><Page /></AppShell>),
 });
 
-function QuartiersPage() {
-  const stats = getStats();
-  const members = getMembers();
-  const sorted = [...stats.byQuartier].sort((a, b) => b.count - a.count);
-
+function Page() {
+  const { data, isLoading } = useQuartiersStats();
   return (
-    <div className="space-y-5 max-w-[1400px] mx-auto">
+    <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-display font-bold">Quartiers & délégués</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Couverture territoriale de la zone pilote — Daloa, Haut-Sassandra
-        </p>
+        <h1 className="font-display font-bold text-2xl">Quartiers & délégués</h1>
+        <p className="text-sm text-muted-foreground">Répartition des membres par quartier — Daloa.</p>
       </div>
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {sorted.map((r) => {
-          const qMembers = members.filter((m) => m.quartier === r.quartier);
-          const cotise = qMembers.reduce((s, m) => s + m.totalCotise, 0);
-          const actifs = qMembers.filter((m) => m.status === "actif").length;
-          return (
-            <div key={r.quartier} className="rounded-2xl border bg-card p-5 hover:shadow-md transition-shadow">
-              <div className="flex items-start justify-between">
-                <div className="size-11 rounded-xl bg-gold/15 text-gold flex items-center justify-center">
-                  <MapPin className="size-5" />
-                </div>
-                <span className="text-xs px-2 py-1 rounded-full bg-success/15 text-success font-medium">
-                  {actifs} actifs
-                </span>
-              </div>
-              <h3 className="mt-4 font-display font-bold text-lg">{r.quartier}</h3>
-              <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <div className="text-xs text-muted-foreground">Membres</div>
-                  <div className="font-semibold flex items-center gap-1.5"><Users className="size-3.5" />{r.count}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-muted-foreground">Cotisé total</div>
-                  <div className="font-semibold tabular-nums">{formatFcfa(cotise)}</div>
-                </div>
-              </div>
-              <div className="mt-4 pt-4 border-t flex items-center gap-2.5">
-                <div className="size-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
-                  {r.quartier.slice(0, 2).toUpperCase()}
-                </div>
-                <div>
-                  <div className="text-sm font-medium">Délégué de quartier</div>
-                  <div className="text-xs text-muted-foreground">{Math.max(1, Math.ceil(r.count / 30))} relais locaux</div>
-                </div>
+      {isLoading ? <Loader2 className="size-6 animate-spin mx-auto my-12 text-primary" /> : (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {(data ?? []).map((q) => (
+            <div key={q.quartier} className="rounded-xl border bg-card p-5">
+              <div className="flex items-center gap-2"><MapPin className="size-4 text-primary" /><h3 className="font-display font-semibold">{q.quartier}</h3></div>
+              <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+                <div><div className="text-2xl font-display font-bold">{q.total}</div><div className="text-[10px] uppercase text-muted-foreground">Total</div></div>
+                <div><div className="text-2xl font-display font-bold text-emerald-600">{q.actifs}</div><div className="text-[10px] uppercase text-muted-foreground">Actifs</div></div>
+                <div><div className="text-2xl font-display font-bold text-slate-600">{q.decedes}</div><div className="text-[10px] uppercase text-muted-foreground">Décédés</div></div>
               </div>
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

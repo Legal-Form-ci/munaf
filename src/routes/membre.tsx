@@ -1,135 +1,87 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { PublicLayout } from "@/components/PublicLayout";
-import { getMembers, getCotisations, formatFcfa, STATUS_LABEL } from "@/lib/mock-data";
-import { MemberStatusBadge } from "@/components/StatusBadge";
-import { Wallet, FileText, Bell, Download, Users, HeartPulse, ShieldCheck } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/lib/auth";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+import { Loader2, LogOut, ShieldCheck, Wallet, FileText } from "lucide-react";
+import logo from "@/assets/munaf-logo.png";
+import { STATUS_LABEL, formatFcfa, FORMULE_VALUE, COT_LABEL } from "@/lib/api";
 
 export const Route = createFileRoute("/membre")({
-  head: () => ({ meta: [{ title: "Mon espace membre — MuNAF" }] }),
-  component: () => (
-    <PublicLayout>
-      <MemberSpace />
-    </PublicLayout>
-  ),
+  head: () => ({ meta: [{ title: "Espace membre — MuNAF" }] }),
+  component: MembrePage,
 });
 
-function MemberSpace() {
-  // Démo: on simule un membre connecté (le premier actif)
-  const members = getMembers();
-  const me = members.find((m) => m.status === "actif") ?? members[0];
-  const cotisations = getCotisations().filter((c) => c.memberId === me.id).slice(0, 8);
+function MembrePage() {
+  const { user, loading, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => { if (!loading && !user) navigate({ to: "/connexion" }); }, [loading, user, navigate]);
+
+  const { data: membre, isLoading } = useQuery({
+    queryKey: ["my-membre", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("membres").select("*").eq("user_id", user!.id).maybeSingle();
+      return data;
+    },
+    enabled: !!user,
+  });
+  const { data: cotisations } = useQuery({
+    queryKey: ["my-cot", membre?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("cotisations").select("*").eq("membre_id", membre!.id).order("mois", { ascending: false });
+      return data ?? [];
+    },
+    enabled: !!membre?.id,
+  });
+
+  if (loading || isLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="size-6 animate-spin text-primary" /></div>;
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-10 space-y-8">
-      {/* Header card */}
-      <div className="rounded-2xl bg-brand-gradient text-white p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-6">
-        <img src={me.photo} alt="" className="size-20 rounded-2xl object-cover ring-4 ring-gold/30" />
-        <div className="flex-1">
-          <div className="text-gold text-xs uppercase tracking-wider font-semibold">Espace membre</div>
-          <h1 className="font-display font-bold text-2xl mt-1">{me.prenom} {me.nom}</h1>
-          <div className="text-white/70 text-sm mt-1">
-            Matricule <code className="bg-white/10 px-2 py-0.5 rounded">{me.matricule}</code>
-            {" "}· {me.quartier}, Daloa
-          </div>
-        </div>
-        <div className="md:text-right">
-          <MemberStatusBadge status={me.status} />
-          <div className="text-xs text-white/60 mt-2">Formule {formatFcfa(me.formule)}</div>
-        </div>
-      </div>
-
-      {/* Quick actions */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {[
-          { icon: Wallet, t: "Cotiser", c: "bg-gold/15 text-gold" },
-          { icon: FileText, t: "Déclarer décès", c: "bg-destructive/10 text-destructive" },
-          { icon: Download, t: "Mes reçus", c: "bg-primary/10 text-primary" },
-          { icon: Users, t: "Ayants droit", c: "bg-info/15 text-info" },
-        ].map((a) => (
-          <button key={a.t} className="rounded-2xl border bg-card p-4 hover:shadow-md transition-shadow text-left">
-            <div className={`size-10 rounded-xl flex items-center justify-center ${a.c} mb-3`}>
-              <a.icon className="size-5" />
-            </div>
-            <div className="font-medium text-sm">{a.t}</div>
+    <div className="min-h-screen bg-muted/30">
+      <header className="bg-card border-b">
+        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2"><img src={logo} className="size-9" /><span className="font-display font-bold">Mu<span className="text-gold">NAF</span></span></Link>
+          <button onClick={async () => { await signOut(); navigate({ to: "/" }); }} className="text-sm flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted">
+            <LogOut className="size-4" /> Déconnexion
           </button>
-        ))}
-      </div>
-
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Profil */}
-        <div className="rounded-2xl border bg-card p-6 space-y-3">
-          <h2 className="font-display font-bold">Mon profil</h2>
-          {[
-            ["Téléphone", me.telephone],
-            ["Profession", me.profession],
-            ["Âge", `${me.age} ans`],
-            ["Association", me.association],
-            ["Inscrit le", me.dateInscription],
-            ["Fin de carence", me.dateFinCarence],
-          ].map(([k, v]) => (
-            <div key={k} className="flex justify-between text-sm">
-              <span className="text-muted-foreground">{k}</span>
-              <span className="font-medium text-right">{v}</span>
-            </div>
-          ))}
         </div>
-
-        {/* Cotisations */}
-        <div className="lg:col-span-2 rounded-2xl border bg-card">
-          <div className="flex items-center justify-between p-5 border-b">
-            <div>
-              <h2 className="font-display font-bold">Mes cotisations</h2>
-              <p className="text-xs text-muted-foreground">Total cotisé : <strong>{formatFcfa(me.totalCotise)}</strong></p>
-            </div>
-            <button className="text-sm text-primary hover:underline">Tout télécharger</button>
+      </header>
+      <main className="max-w-5xl mx-auto p-4 md:p-8">
+        {!membre ? (
+          <div className="rounded-2xl border bg-card p-8 text-center">
+            <ShieldCheck className="size-10 mx-auto text-primary" />
+            <h2 className="font-display font-bold text-xl mt-3">Bienvenue dans votre espace membre</h2>
+            <p className="text-muted-foreground mt-2 text-sm">Votre profil membre n'est pas encore lié à ce compte. Contactez votre délégué de quartier.</p>
           </div>
-          <div className="divide-y">
-            {cotisations.length === 0 ? (
-              <div className="p-8 text-center text-sm text-muted-foreground">Aucune cotisation récente.</div>
-            ) : cotisations.map((c) => (
-              <div key={c.id} className="p-4 flex items-center gap-3">
-                <div className="size-9 rounded-lg bg-muted flex items-center justify-center">
-                  <Wallet className="size-4 text-muted-foreground" />
+        ) : (
+          <>
+            <div className="rounded-2xl border bg-card p-6 flex items-start gap-5">
+              {membre.photo_url ? <img src={membre.photo_url} className="size-20 rounded-full object-cover" /> : <div className="size-20 rounded-full bg-muted" />}
+              <div className="flex-1">
+                <h1 className="font-display font-bold text-2xl">{membre.prenom} {membre.nom}</h1>
+                <div className="text-sm text-muted-foreground">Matricule <span className="font-mono">{membre.matricule}</span> · {membre.quartier}</div>
+                <div className="mt-3 flex gap-2 flex-wrap">
+                  <span className="text-xs px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 font-semibold">{STATUS_LABEL[membre.status]}</span>
+                  <span className="text-xs px-2 py-1 rounded-full bg-accent text-primary font-semibold">Formule {formatFcfa(FORMULE_VALUE[membre.formule])}</span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium">{c.mode} · {c.reference}</div>
-                  <div className="text-xs text-muted-foreground">{c.date}</div>
-                </div>
-                <div className="text-sm font-semibold tabular-nums">{formatFcfa(c.montant)}</div>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Ayants droit */}
-      <div className="rounded-2xl border bg-card p-6">
-        <h2 className="font-display font-bold mb-4 flex items-center gap-2"><HeartPulse className="size-5 text-destructive" /> Mes ayants droit</h2>
-        <div className="grid sm:grid-cols-2 gap-3">
-          {[me.ayantDroitPrincipal, me.ayantDroitSecondaire].map((a) => (
-            <div key={a} className="rounded-xl border bg-muted/30 p-4 flex items-center gap-3">
-              <div className="size-10 rounded-full bg-gold/20 text-gold flex items-center justify-center font-bold">
-                {a.charAt(0)}
-              </div>
-              <div className="text-sm font-medium">{a}</div>
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Notifications */}
-      <div className="rounded-2xl border bg-card p-6">
-        <h2 className="font-display font-bold mb-4 flex items-center gap-2"><Bell className="size-5 text-info" /> Notifications</h2>
-        <ul className="space-y-3 text-sm">
-          <li className="flex items-start gap-3"><ShieldCheck className="size-4 text-success mt-0.5" /> Votre période de carence est terminée. Vous êtes désormais protégé.</li>
-          <li className="flex items-start gap-3"><Wallet className="size-4 text-gold mt-0.5" /> Prochaine échéance : le 30 du mois — {formatFcfa(me.primeAnnuelle / 12)}.</li>
-          <li className="flex items-start gap-3"><Users className="size-4 text-info mt-0.5" /> Nouveau délégué dans votre quartier ({me.quartier}).</li>
-        </ul>
-      </div>
-
-      <div className="text-center text-sm text-muted-foreground">
-        <Link to="/" className="hover:underline">← Retour au site public</Link>
-      </div>
+            <div className="mt-6 rounded-2xl border bg-card overflow-hidden">
+              <div className="px-5 py-4 border-b flex items-center gap-2"><Wallet className="size-4 text-primary" /><h3 className="font-display font-semibold">Mes cotisations</h3></div>
+              <div className="divide-y">
+                {(cotisations ?? []).map((c: any) => (
+                  <div key={c.id} className="px-5 py-3 flex items-center justify-between">
+                    <div><div className="font-medium text-sm">{new Date(c.mois).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}</div></div>
+                    <div className="flex items-center gap-3"><span className="font-semibold">{formatFcfa(c.montant)}</span>
+                      <span className={`text-xs px-2 py-1 rounded-full ${c.status === "payee" ? "bg-emerald-100 text-emerald-700" : c.status === "en_attente" ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"}`}>{COT_LABEL[c.status]}</span></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+      </main>
     </div>
   );
 }
