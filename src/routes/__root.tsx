@@ -114,6 +114,7 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 import { AuthProvider } from "@/lib/auth";
+import { Toaster } from "@/components/ui/sonner";
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
@@ -122,6 +123,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Outlet />
+        <Toaster position="top-right" />
       </AuthProvider>
     </QueryClientProvider>
   );
