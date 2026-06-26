@@ -1,13 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { Smartphone, KeyRound, Users, Briefcase, Shield } from "lucide-react";
+import { useEffect, useState } from "react";
+import { KeyRound, User, AlertCircle, Loader2 } from "lucide-react";
 import logo from "@/assets/munaf-logo.png";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/connexion")({
   head: () => ({
     meta: [
       { title: "Connexion — MuNAF" },
-      { name: "description", content: "Connectez-vous à votre espace membre, délégué ou administrateur MuNAF." },
+      { name: "description", content: "Accédez à votre espace MuNAF — membre, délégué ou administrateur." },
     ],
   }),
   component: ConnexionPage,
@@ -15,23 +16,31 @@ export const Route = createFileRoute("/connexion")({
 
 function ConnexionPage() {
   const navigate = useNavigate();
-  const [role, setRole] = useState<"membre" | "delegue" | "admin">("membre");
-  const [step, setStep] = useState<"phone" | "otp">("phone");
+  const { signInUsername, role, session, loading } = useAuth();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (step === "phone") {
-      setStep("otp");
-      return;
+  useEffect(() => {
+    if (!loading && session && role) {
+      if (role === "admin") navigate({ to: "/admin" });
+      else if (role === "delegue") navigate({ to: "/delegue" });
+      else navigate({ to: "/membre" });
     }
-    if (role === "admin") navigate({ to: "/admin" });
-    else if (role === "delegue") navigate({ to: "/delegue" });
-    else navigate({ to: "/membre" });
+  }, [loading, session, role, navigate]);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    const { error: err } = await signInUsername(username, password);
+    setSubmitting(false);
+    if (err) setError(err);
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
-      {/* Left brand pane */}
+    <div className="min-h-screen grid lg:grid-cols-2 bg-background">
       <div className="hidden lg:flex flex-col bg-brand-gradient text-white p-12 relative overflow-hidden">
         <div className="absolute -right-24 -top-24 size-80 rounded-full bg-gold/15 blur-3xl" />
         <Link to="/" className="flex items-center gap-2.5 relative">
@@ -44,100 +53,80 @@ function ConnexionPage() {
             Une seule porte d'entrée pour toute la communauté MuNAF.
           </h1>
           <p className="mt-5 text-white/70 max-w-md">
-            Membres, délégués de quartier, administrateurs d'association : retrouvez votre tableau
-            de bord personnalisé après authentification sécurisée par OTP.
+            Membres, délégués de quartier, administrateurs : connectez-vous avec votre identifiant
+            MuNAF — sans email, comme votre carte d'adhérent.
           </p>
+          <div className="mt-8 p-4 rounded-xl bg-white/5 border border-white/10 text-sm">
+            <div className="text-gold font-semibold mb-1">Compte de démonstration admin</div>
+            <div className="text-white/80">Identifiant : <code className="font-mono">munaf</code></div>
+            <div className="text-white/80">Mot de passe : <code className="font-mono">@Munaf2026</code></div>
+          </div>
         </div>
-        <div className="text-xs text-white/50 relative">© 2026 MuNAF — Zone pilote Daloa</div>
       </div>
 
-      {/* Right form */}
-      <div className="flex flex-col p-6 md:p-12 justify-center">
-        <div className="max-w-md mx-auto w-full">
-          <div className="lg:hidden mb-8 flex items-center gap-2.5">
-            <img src={logo} alt="" className="size-10 object-contain" />
-            <div className="font-display font-bold text-xl">Mu<span className="text-gold">NAF</span></div>
+      <div className="flex items-center justify-center p-6 lg:p-12">
+        <div className="w-full max-w-md">
+          <div className="lg:hidden mb-8 text-center">
+            <img src={logo} alt="" className="size-14 mx-auto object-contain" />
+            <div className="mt-2 font-display font-bold text-xl">Mu<span className="text-gold">NAF</span></div>
           </div>
-
-          <h2 className="font-display font-bold text-2xl">Connexion</h2>
+          <h2 className="font-display font-bold text-2xl">Se connecter</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Choisissez votre profil puis authentifiez-vous.
+            Entrez votre identifiant MuNAF et votre mot de passe.
           </p>
 
-          {/* Role tabs */}
-          <div className="grid grid-cols-3 gap-2 mt-6 p-1 bg-muted rounded-xl">
-            {[
-              { k: "membre" as const, l: "Membre", icon: Users },
-              { k: "delegue" as const, l: "Délégué", icon: Briefcase },
-              { k: "admin" as const, l: "Admin", icon: Shield },
-            ].map((r) => (
-              <button
-                key={r.k}
-                onClick={() => { setRole(r.k); setStep("phone"); }}
-                className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-xs font-medium transition-colors ${
-                  role === r.k ? "bg-card shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <r.icon className="size-3.5" /> {r.l}
-              </button>
-            ))}
-          </div>
+          <form onSubmit={onSubmit} className="mt-6 space-y-4">
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Identifiant</label>
+              <div className="mt-1.5 relative">
+                <User className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="text"
+                  required
+                  autoComplete="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="munaf"
+                  className="w-full h-11 pl-10 pr-3 rounded-lg border bg-card focus:border-ring outline-none text-sm"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Mot de passe</label>
+              <div className="mt-1.5 relative">
+                <KeyRound className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="password"
+                  required
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full h-11 pl-10 pr-3 rounded-lg border bg-card focus:border-ring outline-none text-sm"
+                />
+              </div>
+            </div>
 
-          <form onSubmit={submit} className="mt-6 space-y-4">
-            {step === "phone" ? (
-              <>
-                <div>
-                  <label className="text-sm font-medium block mb-1.5">Téléphone</label>
-                  <div className="relative">
-                    <Smartphone className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                    <input
-                      type="tel"
-                      placeholder="+225 07 00 00 00 00"
-                      required
-                      className="w-full h-12 pl-10 pr-3 rounded-lg border bg-background focus:border-ring outline-none"
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Un code à 6 chiffres vous sera envoyé par SMS.
-                  </p>
-                </div>
-                <button className="w-full h-12 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90">
-                  Recevoir le code
-                </button>
-              </>
-            ) : (
-              <>
-                <div>
-                  <label className="text-sm font-medium block mb-1.5">Code de vérification</label>
-                  <div className="relative">
-                    <KeyRound className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={6}
-                      placeholder="● ● ● ● ● ●"
-                      required
-                      className="w-full h-12 pl-10 pr-3 rounded-lg border bg-background focus:border-ring outline-none tracking-[0.4em] text-center font-display font-bold"
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Démo : entrez n'importe quels 6 chiffres pour accéder à votre espace.
-                  </p>
-                </div>
-                <button className="w-full h-12 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90">
-                  Se connecter
-                </button>
-                <button type="button" onClick={() => setStep("phone")} className="w-full text-xs text-muted-foreground hover:text-foreground">
-                  ← Modifier le numéro
-                </button>
-              </>
+            {error && (
+              <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+                <AlertCircle className="size-4 shrink-0 mt-0.5" /> {error}
+              </div>
             )}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full h-11 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 disabled:opacity-60 flex items-center justify-center gap-2"
+            >
+              {submitting && <Loader2 className="size-4 animate-spin" />}
+              Connexion
+            </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t text-center text-sm text-muted-foreground">
+          <p className="mt-6 text-xs text-muted-foreground text-center">
             Pas encore membre ?{" "}
-            <Link to="/formules" className="text-primary font-semibold hover:underline">Adhérez en 5 minutes</Link>
-          </div>
+            <Link to="/formules" className="text-primary font-semibold hover:underline">Adhérer à MuNAF</Link>
+          </p>
         </div>
       </div>
     </div>
