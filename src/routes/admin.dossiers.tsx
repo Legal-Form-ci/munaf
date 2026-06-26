@@ -62,7 +62,7 @@ function Page() {
         </div>
       )}
 
-      {edit && <DossierDrawer dossier={edit} onClose={() => setEdit(null)} onSave={async (p) => { await upsert.mutateAsync(p); toast.success("Enregistré"); setEdit(null); }} />}
+      {edit && <DossierDrawer dossier={edit} onClose={() => setEdit(null)} onSave={async (p: any) => { await upsert.mutateAsync(p); toast.success("Enregistré"); setEdit(null); }} />}
     </div>
   );
 }
