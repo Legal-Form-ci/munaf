@@ -1,165 +1,186 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { getMembers, formatFcfa, STATUS_LABEL, type MemberStatus } from "@/lib/mock-data";
-import { MemberStatusBadge } from "@/components/StatusBadge";
-import { useMemo, useState } from "react";
-import { Search, Filter, Download, UserPlus } from "lucide-react";
+import { useMembers, useUpsertMembre, useDeleteMembre, uploadMemberPhoto, STATUS_LABEL, formatFcfa, FORMULE_VALUE } from "@/lib/api";
+import { useState } from "react";
+import { Search, UserPlus, Loader2, Pencil, Trash2, X, Upload } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/membres")({
   head: () => ({ meta: [{ title: "Membres — MuNAF" }] }),
-  component: () => (
-    <AppShell>
-      <MembersPage />
-    </AppShell>
-  ),
+  component: () => (<AppShell><MembersPage /></AppShell>),
 });
 
-const STATUSES: MemberStatus[] = ["actif", "carence", "suspendu", "expire", "resilie", "decede"];
+const STATUSES = ["actif","carence","suspendu","expire","resilie","decede"];
+const FORMULES = ["F100","F200","F300","F500","F1000"];
+
+function statusClasses(s: string) {
+  return {
+    actif: "bg-emerald-100 text-emerald-700",
+    carence: "bg-amber-100 text-amber-700",
+    suspendu: "bg-orange-100 text-orange-700",
+    expire: "bg-red-100 text-red-700",
+    resilie: "bg-slate-200 text-slate-700",
+    decede: "bg-slate-800 text-white",
+  }[s] ?? "bg-muted";
+}
 
 function MembersPage() {
-  const all = getMembers();
   const [q, setQ] = useState("");
-  const [status, setStatus] = useState<MemberStatus | "all">("all");
-  const [page, setPage] = useState(1);
-  const pageSize = 25;
-
-  const filtered = useMemo(() => {
-    const qLow = q.toLowerCase();
-    return all.filter((m) => {
-      if (status !== "all" && m.status !== status) return false;
-      if (!qLow) return true;
-      return (
-        m.nom.toLowerCase().includes(qLow) ||
-        m.prenom.toLowerCase().includes(qLow) ||
-        m.matricule.toLowerCase().includes(qLow) ||
-        m.quartier.toLowerCase().includes(qLow) ||
-        m.telephone.includes(qLow)
-      );
-    });
-  }, [all, q, status]);
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-  const pageItems = filtered.slice((page - 1) * pageSize, page * pageSize);
+  const [status, setStatus] = useState<string>("");
+  const [edit, setEdit] = useState<any | null>(null);
+  const { data, isLoading } = useMembers({ q: q || undefined, status: status || undefined });
+  const upsert = useUpsertMembre();
+  const del = useDeleteMembre();
 
   return (
-    <div className="space-y-5 max-w-[1400px] mx-auto">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-display font-bold">Membres</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {filtered.length.toLocaleString("fr-FR")} membre{filtered.length > 1 ? "s" : ""} —
-            tous les souscripteurs MuNAF
-          </p>
+          <h1 className="font-display font-bold text-2xl">Membres</h1>
+          <p className="text-sm text-muted-foreground">{(data?.length ?? 0).toLocaleString("fr-FR")} résultats</p>
         </div>
-        <div className="flex gap-2">
-          <button className="h-10 px-4 rounded-lg border bg-card text-sm font-medium hover:bg-muted flex items-center gap-2">
-            <Download className="size-4" /> Exporter
-          </button>
-          <button className="h-10 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 flex items-center gap-2">
-            <UserPlus className="size-4" /> Nouveau membre
-          </button>
-        </div>
+        <button onClick={() => setEdit({})} className="h-10 px-4 rounded-lg bg-primary text-primary-foreground font-semibold flex items-center gap-2">
+          <UserPlus className="size-4" /> Nouveau membre
+        </button>
       </div>
 
-      {/* Filters */}
-      <div className="rounded-2xl border bg-card p-4 flex flex-wrap gap-3 items-center">
+      <div className="flex flex-wrap gap-2">
         <div className="relative flex-1 min-w-[220px]">
           <Search className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input
-            value={q}
-            onChange={(e) => { setQ(e.target.value); setPage(1); }}
-            placeholder="Rechercher nom, matricule, quartier, téléphone…"
-            className="w-full h-10 pl-9 pr-3 rounded-lg bg-muted text-sm border border-transparent focus:border-ring focus:bg-card outline-none"
-          />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Nom, matricule, téléphone…" className="w-full h-10 pl-9 pr-3 rounded-lg border bg-card text-sm" />
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <Filter className="size-4 text-muted-foreground" />
-          <button
-            onClick={() => { setStatus("all"); setPage(1); }}
-            className={`px-3 h-8 rounded-full text-xs font-medium border ${status === "all" ? "bg-primary text-primary-foreground border-primary" : "bg-card hover:bg-muted"}`}
-          >
-            Tous
-          </button>
-          {STATUSES.map((s) => (
-            <button
-              key={s}
-              onClick={() => { setStatus(s); setPage(1); }}
-              className={`px-3 h-8 rounded-full text-xs font-medium border ${status === s ? "bg-primary text-primary-foreground border-primary" : "bg-card hover:bg-muted"}`}
-            >
-              {STATUS_LABEL[s]}
-            </button>
-          ))}
-        </div>
+        <select value={status} onChange={(e) => setStatus(e.target.value)} className="h-10 px-3 rounded-lg border bg-card text-sm">
+          <option value="">Tous statuts</option>
+          {STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
+        </select>
       </div>
 
-      {/* Table */}
-      <div className="rounded-2xl border bg-card overflow-hidden">
+      <div className="rounded-xl border bg-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-muted/60 text-muted-foreground text-xs uppercase tracking-wider">
+            <thead className="bg-muted text-left text-xs uppercase text-muted-foreground">
               <tr>
-                <th className="text-left px-4 py-3 font-medium">Membre</th>
-                <th className="text-left px-4 py-3 font-medium hidden md:table-cell">Matricule</th>
-                <th className="text-left px-4 py-3 font-medium hidden lg:table-cell">Localité</th>
-                <th className="text-left px-4 py-3 font-medium">Formule</th>
-                <th className="text-left px-4 py-3 font-medium hidden lg:table-cell">Cotisé</th>
-                <th className="text-left px-4 py-3 font-medium">Statut</th>
+                <th className="px-4 py-3">Membre</th>
+                <th className="px-4 py-3">Matricule</th>
+                <th className="px-4 py-3 hidden md:table-cell">Quartier</th>
+                <th className="px-4 py-3 hidden lg:table-cell">Téléphone</th>
+                <th className="px-4 py-3">Formule</th>
+                <th className="px-4 py-3">Statut</th>
+                <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody className="divide-y">
-              {pageItems.map((m) => (
+              {isLoading ? (
+                <tr><td colSpan={7} className="p-10 text-center"><Loader2 className="size-5 animate-spin mx-auto" /></td></tr>
+              ) : (data ?? []).slice(0, 100).map((m: any) => (
                 <tr key={m.id} className="hover:bg-muted/30">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <img src={m.photo} alt="" className="size-10 rounded-full object-cover ring-1 ring-border" />
-                      <div>
-                        <div className="font-medium">{m.prenom} {m.nom}</div>
-                        <div className="text-xs text-muted-foreground">{m.profession} · {m.telephone}</div>
-                      </div>
+                  <td className="px-4 py-3 flex items-center gap-3">
+                    {m.photo_url ? <img src={m.photo_url} alt="" className="size-9 rounded-full object-cover" /> :
+                      <div className="size-9 rounded-full bg-muted flex items-center justify-center text-xs font-bold">{m.prenom[0]}{m.nom[0]}</div>}
+                    <div>
+                      <div className="font-medium">{m.prenom} {m.nom}</div>
+                      <div className="text-xs text-muted-foreground">{m.profession}</div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 hidden md:table-cell">
-                    <code className="text-xs bg-muted px-2 py-1 rounded">{m.matricule}</code>
+                  <td className="px-4 py-3 font-mono text-xs">{m.matricule}</td>
+                  <td className="px-4 py-3 hidden md:table-cell">{m.quartier}</td>
+                  <td className="px-4 py-3 hidden lg:table-cell font-mono text-xs">{m.telephone}</td>
+                  <td className="px-4 py-3">{formatFcfa(FORMULE_VALUE[m.formule])}</td>
+                  <td className="px-4 py-3"><span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusClasses(m.status)}`}>{STATUS_LABEL[m.status]}</span></td>
+                  <td className="px-4 py-3 text-right">
+                    <button onClick={() => setEdit(m)} className="p-2 rounded hover:bg-muted"><Pencil className="size-4" /></button>
+                    <button onClick={() => { if (confirm(`Supprimer ${m.prenom} ${m.nom} ?`)) del.mutate(m.id, { onSuccess: () => toast.success("Membre supprimé") }); }} className="p-2 rounded hover:bg-destructive/10 text-destructive"><Trash2 className="size-4" /></button>
                   </td>
-                  <td className="px-4 py-3 hidden lg:table-cell">
-                    <div>{m.quartier}</div>
-                    <div className="text-xs text-muted-foreground">Daloa</div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="font-semibold tabular-nums">{formatFcfa(m.formule)}</div>
-                    <div className="text-xs text-muted-foreground">{formatFcfa(m.primeAnnuelle)}/an</div>
-                  </td>
-                  <td className="px-4 py-3 hidden lg:table-cell tabular-nums">{formatFcfa(m.totalCotise)}</td>
-                  <td className="px-4 py-3"><MemberStatusBadge status={m.status} /></td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+        {(data?.length ?? 0) > 100 && <div className="p-3 text-xs text-center text-muted-foreground border-t">100 premiers affichés — affinez la recherche.</div>}
+      </div>
 
-        {/* Pagination */}
-        <div className="flex items-center justify-between p-4 border-t bg-muted/30 text-sm">
-          <div className="text-muted-foreground">
-            Page {page} sur {totalPages} · {filtered.length.toLocaleString("fr-FR")} résultats
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page === 1}
-              className="px-3 h-8 rounded-lg border bg-card disabled:opacity-50"
-            >
-              Précédent
-            </button>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page === totalPages}
-              className="px-3 h-8 rounded-lg border bg-card disabled:opacity-50"
-            >
-              Suivant
-            </button>
-          </div>
+      {edit && <MemberDrawer member={edit} onClose={() => setEdit(null)} onSave={async (payload) => {
+        await upsert.mutateAsync(payload);
+        toast.success("Membre enregistré");
+        setEdit(null);
+      }} />}
+    </div>
+  );
+}
+
+function MemberDrawer({ member, onClose, onSave }: { member: any; onClose: () => void; onSave: (p: any) => Promise<void> }) {
+  const [form, setForm] = useState({
+    id: member.id, nom: member.nom ?? "", prenom: member.prenom ?? "", sexe: member.sexe ?? "M",
+    telephone: member.telephone ?? "", quartier: member.quartier ?? "Commerce", profession: member.profession ?? "",
+    formule: member.formule ?? "F200", status: member.status ?? "carence", photo_url: member.photo_url ?? "",
+    matricule: member.matricule ?? "",
+  });
+  const [uploading, setUploading] = useState(false);
+  const upd = (k: string, v: any) => setForm((f) => ({ ...f, [k]: v }));
+
+  const handlePhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]; if (!file) return;
+    setUploading(true);
+    try {
+      const url = await uploadMemberPhoto(file, form.matricule || `temp-${Date.now()}`);
+      upd("photo_url", url); toast.success("Photo téléversée");
+    } catch (err: any) { toast.error(err.message); }
+    setUploading(false);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex justify-end">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="relative w-full max-w-md h-full bg-card overflow-y-auto">
+        <div className="sticky top-0 bg-card border-b px-5 py-4 flex items-center justify-between">
+          <h2 className="font-display font-bold">{member.id ? "Modifier" : "Nouveau"} membre</h2>
+          <button onClick={onClose} className="p-2 rounded hover:bg-muted"><X className="size-4" /></button>
         </div>
+        <form className="p-5 space-y-3" onSubmit={async (e) => { e.preventDefault(); await onSave(form); }}>
+          <div className="flex items-center gap-3">
+            {form.photo_url ? <img src={form.photo_url} className="size-16 rounded-full object-cover border" /> :
+              <div className="size-16 rounded-full bg-muted" />}
+            <label className="flex-1 h-10 px-3 rounded-lg border bg-muted/30 text-sm flex items-center gap-2 cursor-pointer hover:bg-muted">
+              {uploading ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />} Téléverser photo
+              <input type="file" accept="image/*" onChange={handlePhoto} className="hidden" />
+            </label>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Prénom" value={form.prenom} onChange={(v: string) => upd("prenom", v)} />
+            <Field label="Nom" value={form.nom} onChange={(v: string) => upd("nom", v)} />
+          </div>
+          <Field label="Téléphone" value={form.telephone} onChange={(v: string) => upd("telephone", v)} />
+          <Field label="Profession" value={form.profession} onChange={(v: string) => upd("profession", v)} />
+          <div className="grid grid-cols-2 gap-3">
+            <Select label="Sexe" value={form.sexe} onChange={(v: string) => upd("sexe", v)} options={[["M","Masculin"],["F","Féminin"]]} />
+            <Field label="Quartier" value={form.quartier} onChange={(v: string) => upd("quartier", v)} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Select label="Formule" value={form.formule} onChange={(v: string) => upd("formule", v)} options={FORMULES.map((f) => [f, formatFcfa(FORMULE_VALUE[f])])} />
+            <Select label="Statut" value={form.status} onChange={(v: string) => upd("status", v)} options={STATUSES.map((s) => [s, STATUS_LABEL[s]])} />
+          </div>
+          <button type="submit" className="w-full h-11 rounded-lg bg-primary text-primary-foreground font-semibold mt-2">Enregistrer</button>
+        </form>
       </div>
     </div>
+  );
+}
+
+function Field({ label, value, onChange }: any) {
+  return (
+    <label className="block">
+      <span className="text-xs font-semibold uppercase text-muted-foreground">{label}</span>
+      <input value={value} onChange={(e) => onChange(e.target.value)} className="mt-1 w-full h-10 px-3 rounded-lg border bg-card text-sm" />
+    </label>
+  );
+}
+function Select({ label, value, onChange, options }: any) {
+  return (
+    <label className="block">
+      <span className="text-xs font-semibold uppercase text-muted-foreground">{label}</span>
+      <select value={value} onChange={(e) => onChange(e.target.value)} className="mt-1 w-full h-10 px-3 rounded-lg border bg-card text-sm">
+        {options.map(([v, l]: [string, string]) => <option key={v} value={v}>{l}</option>)}
+      </select>
+    </label>
   );
 }

@@ -1,83 +1,133 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AppShell } from "@/components/AppShell";
-import { getMembers, STATUS_LABEL } from "@/lib/mock-data";
-import { MemberStatusBadge } from "@/components/StatusBadge";
+import { PublicLayout } from "@/components/PublicLayout";
 import { useState } from "react";
-import { ShieldCheck, Search } from "lucide-react";
+import { Search, ShieldCheck, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { STATUS_LABEL, FORMULE_VALUE, formatFcfa } from "@/lib/api";
 
 export const Route = createFileRoute("/verification")({
-  head: () => ({ meta: [{ title: "Vérification publique — MuNAF" }] }),
+  head: () => ({
+    meta: [
+      { title: "Vérifier un membre — MuNAF" },
+      { name: "description", content: "Vérifiez l'adhésion d'un membre MuNAF par son numéro de téléphone ou son matricule." },
+    ],
+  }),
   component: () => (
-    <AppShell>
+    <PublicLayout>
       <VerificationPage />
-    </AppShell>
+    </PublicLayout>
   ),
 });
 
+type Result = {
+  matricule: string; nom: string; prenom: string; quartier: string; ville: string;
+  formule: string; status: string; date_adhesion: string; photo_url: string | null;
+};
+
+function statusColor(s: string) {
+  if (s === "actif") return "bg-emerald-100 text-emerald-700 border-emerald-200";
+  if (s === "carence") return "bg-amber-100 text-amber-700 border-amber-200";
+  if (s === "decede") return "bg-slate-200 text-slate-700 border-slate-300";
+  return "bg-red-100 text-red-700 border-red-200";
+}
+
 function VerificationPage() {
   const [q, setQ] = useState("");
-  const members = getMembers();
-  const matches = q.trim().length >= 3
-    ? members.filter(
-        (m) =>
-          m.matricule.toLowerCase().includes(q.toLowerCase()) ||
-          m.telephone.includes(q) ||
-          `${m.prenom} ${m.nom}`.toLowerCase().includes(q.toLowerCase()),
-      ).slice(0, 8)
-    : [];
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<Result[] | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  const search = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErr(null); setResults(null); setLoading(true);
+    const { data, error } = await supabase.rpc("verifier_membre", { _query: q.trim() });
+    setLoading(false);
+    if (error) { setErr(error.message); return; }
+    setResults((data ?? []) as Result[]);
+  };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div className="rounded-2xl bg-brand-gradient text-white p-8 text-center">
-        <div className="inline-flex size-14 rounded-2xl bg-gold/20 text-gold items-center justify-center mb-4">
-          <ShieldCheck className="size-7" />
+    <div className="max-w-4xl mx-auto px-4 md:px-6 py-12">
+      <div className="text-center">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent text-primary text-xs font-semibold">
+          <ShieldCheck className="size-3.5" /> Portail public de vérification
         </div>
-        <h1 className="text-2xl font-display font-bold">Portail public de vérification</h1>
-        <p className="text-white/70 mt-2 text-sm max-w-md mx-auto">
-          Vérifiez qu'un membre est enregistré et à jour de ses cotisations.
-          Recherche par matricule ou numéro de téléphone.
+        <h1 className="font-display font-bold text-3xl md:text-4xl mt-4">Vérifier l'adhésion d'un membre</h1>
+        <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
+          Entrez le <strong>numéro de téléphone</strong> (+225…) ou le <strong>matricule MNF-XXXXX</strong> du membre.
+          Seules les informations publiques sont affichées.
         </p>
       </div>
 
-      <div className="rounded-2xl border bg-card p-6">
-        <label className="text-sm font-medium block mb-2">Recherche</label>
-        <div className="relative">
+      <form onSubmit={search} className="mt-8 flex gap-2 max-w-2xl mx-auto">
+        <div className="flex-1 relative">
           <Search className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Ex. MNF-24-00042 ou +221 77 123 45 67"
-            className="w-full h-12 pl-10 pr-3 rounded-xl bg-muted text-sm border border-transparent focus:border-ring focus:bg-card outline-none"
+            placeholder="+22507XXXXXXXX  ou  MNF-00123"
+            className="w-full h-12 pl-10 pr-3 rounded-lg border bg-card focus:border-ring outline-none text-sm"
+            required
           />
         </div>
-        <p className="text-xs text-muted-foreground mt-2">
-          Saisissez au moins 3 caractères. Les informations sensibles ne sont jamais divulguées.
-        </p>
-      </div>
+        <button
+          type="submit"
+          disabled={loading}
+          className="h-12 px-6 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 disabled:opacity-60 flex items-center gap-2"
+        >
+          {loading ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
+          Vérifier
+        </button>
+      </form>
 
-      {matches.length > 0 && (
-        <div className="space-y-3">
-          {matches.map((m) => (
-            <div key={m.id} className="rounded-2xl border bg-card p-5 flex items-center gap-4">
-              <img src={m.photo} alt="" className="size-14 rounded-full object-cover ring-2 ring-gold/40" />
-              <div className="flex-1 min-w-0">
-                <div className="font-semibold">{m.prenom} {m.nom.charAt(0)}.</div>
-                <div className="text-xs text-muted-foreground">
-                  Quartier {m.quartier}, Daloa · Matricule <code className="bg-muted px-1.5 py-0.5 rounded">{m.matricule}</code>
-                </div>
-                <div className="text-xs text-muted-foreground mt-0.5">
-                  Statut : <strong className="text-foreground">{STATUS_LABEL[m.status]}</strong>
-                </div>
-              </div>
-              <MemberStatusBadge status={m.status} />
-            </div>
-          ))}
+      {err && (
+        <div className="mt-6 max-w-2xl mx-auto flex items-start gap-2 p-4 rounded-lg bg-destructive/10 text-destructive text-sm">
+          <AlertCircle className="size-4 shrink-0 mt-0.5" /> {err}
         </div>
       )}
 
-      {q.length >= 3 && matches.length === 0 && (
-        <div className="rounded-2xl border bg-card p-8 text-center text-sm text-muted-foreground">
-          Aucun membre trouvé pour « {q} ».
+      {results !== null && !err && (
+        <div className="mt-8 max-w-2xl mx-auto">
+          {results.length === 0 ? (
+            <div className="p-6 rounded-xl border bg-card text-center">
+              <AlertCircle className="size-8 mx-auto text-muted-foreground" />
+              <p className="mt-3 font-semibold">Aucun membre trouvé</p>
+              <p className="text-sm text-muted-foreground">Vérifiez le numéro de téléphone ou le matricule.</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {results.map((r) => (
+                <div key={r.matricule} className="p-5 rounded-xl border bg-card flex gap-4">
+                  {r.photo_url ? (
+                    <img src={r.photo_url} alt="" className="size-16 rounded-full object-cover border" />
+                  ) : (
+                    <div className="size-16 rounded-full bg-muted flex items-center justify-center font-bold text-muted-foreground">
+                      {r.prenom[0]}{r.nom[0]}
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <CheckCircle2 className="size-4 text-emerald-600" />
+                      <span className="font-display font-bold">{r.prenom} {r.nom}</span>
+                      <span className={`text-xs px-2 py-0.5 rounded-full border ${statusColor(r.status)}`}>
+                        {STATUS_LABEL[r.status] ?? r.status}
+                      </span>
+                    </div>
+                    <div className="mt-1 text-sm text-muted-foreground">
+                      Matricule <span className="font-mono text-foreground">{r.matricule}</span> · {r.quartier}, {r.ville}
+                    </div>
+                    <div className="mt-2 text-sm">
+                      Formule <strong>{formatFcfa(FORMULE_VALUE[r.formule] ?? 0)}</strong> ·
+                      adhérent depuis {new Date(r.date_adhesion).toLocaleDateString("fr-FR")}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <p className="text-[11px] text-muted-foreground text-center pt-2">
+                Confidentialité : téléphone, date de naissance et données personnelles ne sont pas affichés publiquement.
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>
