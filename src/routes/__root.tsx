@@ -80,8 +80,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "MuNAF — Console d'administration" },
       { name: "description", content: "Mutuelle Numérique d'Assistance Familiale — Plateforme de prévoyance communautaire." },
       { property: "og:title", content: "MuNAF — Console d'administration" },
-      { property: "og:description", content: "Parce qu'un décès ne devrait jamais ruiner une famille." },
+      { property: "og:description", content: "Mutuelle Numérique d'Assistance Familiale — Plateforme de prévoyance communautaire." },
       { property: "og:type", content: "website" },
+      { name: "twitter:title", content: "MuNAF — Console d'administration" },
+      { name: "twitter:description", content: "Mutuelle Numérique d'Assistance Familiale — Plateforme de prévoyance communautaire." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/61bfa449-a418-49b1-985e-b7b1c97c017e" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/61bfa449-a418-49b1-985e-b7b1c97c017e" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -113,18 +118,13 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-import { AuthProvider } from "@/lib/auth";
-import { Toaster } from "@/components/ui/sonner";
-
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Outlet />
-        <Toaster position="top-right" />
-      </AuthProvider>
+      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+      <Outlet />
     </QueryClientProvider>
   );
 }
