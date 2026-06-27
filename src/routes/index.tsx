@@ -31,7 +31,19 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
-  const stats = getStats();
+  const { data: stats } = useQuery({
+    queryKey: ["stats-publiques"],
+    queryFn: async () => {
+      const { data } = await supabase.rpc("stats_publiques");
+      const r: any = Array.isArray(data) ? data[0] : data;
+      return {
+        totalMembers: Number(r?.total_membres ?? 0),
+        dossiersTotal: Number(r?.total_dossiers ?? 0),
+      };
+    },
+  });
+  const totalMembers = stats?.totalMembers ?? 0;
+  const dossiersTotal = stats?.dossiersTotal ?? 0;
   return (
     <>
       {/* Hero */}
