@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PublicLayout } from "@/components/PublicLayout";
-import { FORMULES_PUBLIC, formatFcfa, getStats } from "@/lib/mock-data";
+import { FORMULES_PUBLIC, formatFcfa } from "@/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import {
   ShieldCheck,
   HeartHandshake,
