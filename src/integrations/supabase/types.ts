@@ -308,6 +308,16 @@ export type Database = {
         }
         Returns: boolean
       }
+      stats_publiques: {
+        Args: never
+        Returns: {
+          assistance_versee: number
+          cotisations_collectees: number
+          quartiers: number
+          total_dossiers: number
+          total_membres: number
+        }[]
+      }
       verifier_membre: {
         Args: { _query: string }
         Returns: {
