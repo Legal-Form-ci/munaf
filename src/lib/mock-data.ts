@@ -161,14 +161,21 @@ export interface Cotisation {
 }
 
 const FORMULES: { capital: Formule; prime: number; nom: string }[] = [
-  { capital: 100000, prime: 2500, nom: "Essentielle" },
-  { capital: 200000, prime: 5000, nom: "Familiale" },
-  { capital: 300000, prime: 7500, nom: "Sérénité" },
-  { capital: 500000, prime: 12500, nom: "Prestige" },
-  { capital: 1000000, prime: 25000, nom: "Patrimoine" },
+  { capital: 100000, prime: 3252, nom: "F1 — Essentielle" },
+  { capital: 200000, prime: 6504, nom: "F2 — Familiale" },
+  { capital: 300000, prime: 9756, nom: "F3 — Sérénité" },
+  { capital: 400000, prime: 12996, nom: "F4 — Équilibre" },
+  { capital: 500000, prime: 16248, nom: "F5 — Confort" },
+  { capital: 600000, prime: 19500, nom: "F6 — Prestige" },
+  { capital: 700000, prime: 22752, nom: "F7 — Excellence" },
+  { capital: 800000, prime: 26004, nom: "F8 — Premium" },
+  { capital: 900000, prime: 29256, nom: "F9 — Élite" },
+  { capital: 1000000, prime: 32496, nom: "F10 — Patrimoine" },
 ];
 
 export const FORMULES_PUBLIC = FORMULES;
+export const FRAIS_ADHESION = 2000;
+
 
 let _members: Member[] | null = null;
 let _dossiers: Dossier[] | null = null;
