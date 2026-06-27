@@ -10,7 +10,7 @@ export type DossierStatus =
   | "transmis"
   | "assistance_versee"
   | "cloture";
-export type Formule = 100000 | 200000 | 300000 | 500000 | 1000000;
+export type Formule = 100000 | 200000 | 300000 | 400000 | 500000 | 600000 | 700000 | 800000 | 900000 | 1000000;
 
 // Quartiers urbains de Daloa + sous-préfectures rurales du Haut-Sassandra
 export const QUARTIERS = [
