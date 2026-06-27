@@ -79,8 +79,8 @@ function HomePage() {
               </Link>
             </div>
             <div className="mt-10 grid grid-cols-3 gap-6 max-w-md">
-              <Stat value={stats.totalMembers.toLocaleString("fr-FR")} label="Membres" />
-              <Stat value={`${stats.dossiersTotal}`} label="Dossiers traités" />
+              <Stat value={totalMembers.toLocaleString("fr-FR")} label="Membres" />
+              <Stat value={`${dossiersTotal}`} label="Dossiers traités" />
               <Stat value="72h" label="Délai paiement" />
             </div>
           </div>
