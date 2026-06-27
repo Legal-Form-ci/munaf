@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PublicLayout } from "@/components/PublicLayout";
-import { FORMULES_PUBLIC, formatFcfa, getStats } from "@/lib/mock-data";
+import { FORMULES_PUBLIC, formatFcfa } from "@/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import {
   ShieldCheck,
   HeartHandshake,
@@ -29,7 +31,19 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
-  const stats = getStats();
+  const { data: stats } = useQuery({
+    queryKey: ["stats-publiques"],
+    queryFn: async () => {
+      const { data } = await supabase.rpc("stats_publiques");
+      const r: any = Array.isArray(data) ? data[0] : data;
+      return {
+        totalMembers: Number(r?.total_membres ?? 0),
+        dossiersTotal: Number(r?.total_dossiers ?? 0),
+      };
+    },
+  });
+  const totalMembers = stats?.totalMembers ?? 0;
+  const dossiersTotal = stats?.dossiersTotal ?? 0;
   return (
     <>
       {/* Hero */}
@@ -65,8 +79,8 @@ function HomePage() {
               </Link>
             </div>
             <div className="mt-10 grid grid-cols-3 gap-6 max-w-md">
-              <Stat value={stats.totalMembers.toLocaleString("fr-FR")} label="Membres" />
-              <Stat value={`${stats.dossiersTotal}`} label="Dossiers traités" />
+              <Stat value={totalMembers.toLocaleString("fr-FR")} label="Membres" />
+              <Stat value={`${dossiersTotal}`} label="Dossiers traités" />
               <Stat value="72h" label="Délai paiement" />
             </div>
           </div>
