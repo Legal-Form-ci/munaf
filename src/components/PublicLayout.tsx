@@ -9,6 +9,7 @@ const PUBLIC_NAV = [
   { to: "/a-propos", label: "À propos" },
   { to: "/comment-ca-marche", label: "Comment ça marche" },
   { to: "/formules", label: "Formules" },
+  { to: "/associations", label: "Associations" },
   { to: "/faq", label: "FAQ" },
   { to: "/contact", label: "Contact" },
 ] as const;
