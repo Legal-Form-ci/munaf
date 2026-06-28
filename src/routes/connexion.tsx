@@ -24,9 +24,7 @@ function ConnexionPage() {
 
   useEffect(() => {
     if (!loading && session && role) {
-      if (role === "admin") navigate({ to: "/admin" });
-      else if (role === "delegue") navigate({ to: "/delegue" });
-      else navigate({ to: "/membre" });
+      import("@/lib/auth").then(({ homeForRole }) => navigate({ to: homeForRole(role) as any }));
     }
   }, [loading, session, role, navigate]);
 

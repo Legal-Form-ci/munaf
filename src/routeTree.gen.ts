@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerificationRouteImport } from './routes/verification'
+import { Route as NsiaRouteImport } from './routes/nsia'
 import { Route as MembreRouteImport } from './routes/membre'
 import { Route as FormulesRouteImport } from './routes/formules'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -18,17 +19,27 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
 import { Route as AssociationsRouteImport } from './routes/associations'
+import { Route as AssociationRouteImport } from './routes/association'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminQuartiersRouteImport } from './routes/admin.quartiers'
+import { Route as AdminParametresRouteImport } from './routes/admin.parametres'
+import { Route as AdminNsiaRouteImport } from './routes/admin.nsia'
 import { Route as AdminMembresRouteImport } from './routes/admin.membres'
 import { Route as AdminDossiersRouteImport } from './routes/admin.dossiers'
 import { Route as AdminCotisationsRouteImport } from './routes/admin.cotisations'
+import { Route as AdminAuditRouteImport } from './routes/admin.audit'
+import { Route as AdminAssociationsRouteImport } from './routes/admin.associations'
 
 const VerificationRoute = VerificationRouteImport.update({
   id: '/verification',
   path: '/verification',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NsiaRoute = NsiaRouteImport.update({
+  id: '/nsia',
+  path: '/nsia',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MembreRoute = MembreRouteImport.update({
@@ -71,6 +82,11 @@ const AssociationsRoute = AssociationsRouteImport.update({
   path: '/associations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AssociationRoute = AssociationRouteImport.update({
+  id: '/association',
+  path: '/association',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AProposRoute = AProposRouteImport.update({
   id: '/a-propos',
   path: '/a-propos',
@@ -91,6 +107,16 @@ const AdminQuartiersRoute = AdminQuartiersRouteImport.update({
   path: '/admin/quartiers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminParametresRoute = AdminParametresRouteImport.update({
+  id: '/admin/parametres',
+  path: '/admin/parametres',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminNsiaRoute = AdminNsiaRouteImport.update({
+  id: '/admin/nsia',
+  path: '/admin/nsia',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminMembresRoute = AdminMembresRouteImport.update({
   id: '/admin/membres',
   path: '/admin/membres',
@@ -106,10 +132,21 @@ const AdminCotisationsRoute = AdminCotisationsRouteImport.update({
   path: '/admin/cotisations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAuditRoute = AdminAuditRouteImport.update({
+  id: '/admin/audit',
+  path: '/admin/audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAssociationsRoute = AdminAssociationsRouteImport.update({
+  id: '/admin/associations',
+  path: '/admin/associations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/association': typeof AssociationRoute
   '/associations': typeof AssociationsRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/connexion': typeof ConnexionRoute
@@ -118,16 +155,22 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/formules': typeof FormulesRoute
   '/membre': typeof MembreRoute
+  '/nsia': typeof NsiaRoute
   '/verification': typeof VerificationRoute
+  '/admin/associations': typeof AdminAssociationsRoute
+  '/admin/audit': typeof AdminAuditRoute
   '/admin/cotisations': typeof AdminCotisationsRoute
   '/admin/dossiers': typeof AdminDossiersRoute
   '/admin/membres': typeof AdminMembresRoute
+  '/admin/nsia': typeof AdminNsiaRoute
+  '/admin/parametres': typeof AdminParametresRoute
   '/admin/quartiers': typeof AdminQuartiersRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/association': typeof AssociationRoute
   '/associations': typeof AssociationsRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/connexion': typeof ConnexionRoute
@@ -136,10 +179,15 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/formules': typeof FormulesRoute
   '/membre': typeof MembreRoute
+  '/nsia': typeof NsiaRoute
   '/verification': typeof VerificationRoute
+  '/admin/associations': typeof AdminAssociationsRoute
+  '/admin/audit': typeof AdminAuditRoute
   '/admin/cotisations': typeof AdminCotisationsRoute
   '/admin/dossiers': typeof AdminDossiersRoute
   '/admin/membres': typeof AdminMembresRoute
+  '/admin/nsia': typeof AdminNsiaRoute
+  '/admin/parametres': typeof AdminParametresRoute
   '/admin/quartiers': typeof AdminQuartiersRoute
   '/admin': typeof AdminIndexRoute
 }
@@ -147,6 +195,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/association': typeof AssociationRoute
   '/associations': typeof AssociationsRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/connexion': typeof ConnexionRoute
@@ -155,10 +204,15 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/formules': typeof FormulesRoute
   '/membre': typeof MembreRoute
+  '/nsia': typeof NsiaRoute
   '/verification': typeof VerificationRoute
+  '/admin/associations': typeof AdminAssociationsRoute
+  '/admin/audit': typeof AdminAuditRoute
   '/admin/cotisations': typeof AdminCotisationsRoute
   '/admin/dossiers': typeof AdminDossiersRoute
   '/admin/membres': typeof AdminMembresRoute
+  '/admin/nsia': typeof AdminNsiaRoute
+  '/admin/parametres': typeof AdminParametresRoute
   '/admin/quartiers': typeof AdminQuartiersRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -167,6 +221,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/a-propos'
+    | '/association'
     | '/associations'
     | '/comment-ca-marche'
     | '/connexion'
@@ -175,16 +230,22 @@ export interface FileRouteTypes {
     | '/faq'
     | '/formules'
     | '/membre'
+    | '/nsia'
     | '/verification'
+    | '/admin/associations'
+    | '/admin/audit'
     | '/admin/cotisations'
     | '/admin/dossiers'
     | '/admin/membres'
+    | '/admin/nsia'
+    | '/admin/parametres'
     | '/admin/quartiers'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/a-propos'
+    | '/association'
     | '/associations'
     | '/comment-ca-marche'
     | '/connexion'
@@ -193,16 +254,22 @@ export interface FileRouteTypes {
     | '/faq'
     | '/formules'
     | '/membre'
+    | '/nsia'
     | '/verification'
+    | '/admin/associations'
+    | '/admin/audit'
     | '/admin/cotisations'
     | '/admin/dossiers'
     | '/admin/membres'
+    | '/admin/nsia'
+    | '/admin/parametres'
     | '/admin/quartiers'
     | '/admin'
   id:
     | '__root__'
     | '/'
     | '/a-propos'
+    | '/association'
     | '/associations'
     | '/comment-ca-marche'
     | '/connexion'
@@ -211,10 +278,15 @@ export interface FileRouteTypes {
     | '/faq'
     | '/formules'
     | '/membre'
+    | '/nsia'
     | '/verification'
+    | '/admin/associations'
+    | '/admin/audit'
     | '/admin/cotisations'
     | '/admin/dossiers'
     | '/admin/membres'
+    | '/admin/nsia'
+    | '/admin/parametres'
     | '/admin/quartiers'
     | '/admin/'
   fileRoutesById: FileRoutesById
@@ -222,6 +294,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AProposRoute: typeof AProposRoute
+  AssociationRoute: typeof AssociationRoute
   AssociationsRoute: typeof AssociationsRoute
   CommentCaMarcheRoute: typeof CommentCaMarcheRoute
   ConnexionRoute: typeof ConnexionRoute
@@ -230,10 +303,15 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   FormulesRoute: typeof FormulesRoute
   MembreRoute: typeof MembreRoute
+  NsiaRoute: typeof NsiaRoute
   VerificationRoute: typeof VerificationRoute
+  AdminAssociationsRoute: typeof AdminAssociationsRoute
+  AdminAuditRoute: typeof AdminAuditRoute
   AdminCotisationsRoute: typeof AdminCotisationsRoute
   AdminDossiersRoute: typeof AdminDossiersRoute
   AdminMembresRoute: typeof AdminMembresRoute
+  AdminNsiaRoute: typeof AdminNsiaRoute
+  AdminParametresRoute: typeof AdminParametresRoute
   AdminQuartiersRoute: typeof AdminQuartiersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -245,6 +323,13 @@ declare module '@tanstack/react-router' {
       path: '/verification'
       fullPath: '/verification'
       preLoaderRoute: typeof VerificationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nsia': {
+      id: '/nsia'
+      path: '/nsia'
+      fullPath: '/nsia'
+      preLoaderRoute: typeof NsiaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/membre': {
@@ -303,6 +388,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AssociationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/association': {
+      id: '/association'
+      path: '/association'
+      fullPath: '/association'
+      preLoaderRoute: typeof AssociationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/a-propos': {
       id: '/a-propos'
       path: '/a-propos'
@@ -331,6 +423,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminQuartiersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/parametres': {
+      id: '/admin/parametres'
+      path: '/admin/parametres'
+      fullPath: '/admin/parametres'
+      preLoaderRoute: typeof AdminParametresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/nsia': {
+      id: '/admin/nsia'
+      path: '/admin/nsia'
+      fullPath: '/admin/nsia'
+      preLoaderRoute: typeof AdminNsiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/membres': {
       id: '/admin/membres'
       path: '/admin/membres'
@@ -352,12 +458,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCotisationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/audit': {
+      id: '/admin/audit'
+      path: '/admin/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AdminAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/associations': {
+      id: '/admin/associations'
+      path: '/admin/associations'
+      fullPath: '/admin/associations'
+      preLoaderRoute: typeof AdminAssociationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
+  AssociationRoute: AssociationRoute,
   AssociationsRoute: AssociationsRoute,
   CommentCaMarcheRoute: CommentCaMarcheRoute,
   ConnexionRoute: ConnexionRoute,
@@ -366,10 +487,15 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   FormulesRoute: FormulesRoute,
   MembreRoute: MembreRoute,
+  NsiaRoute: NsiaRoute,
   VerificationRoute: VerificationRoute,
+  AdminAssociationsRoute: AdminAssociationsRoute,
+  AdminAuditRoute: AdminAuditRoute,
   AdminCotisationsRoute: AdminCotisationsRoute,
   AdminDossiersRoute: AdminDossiersRoute,
   AdminMembresRoute: AdminMembresRoute,
+  AdminNsiaRoute: AdminNsiaRoute,
+  AdminParametresRoute: AdminParametresRoute,
   AdminQuartiersRoute: AdminQuartiersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
