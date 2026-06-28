@@ -9,6 +9,7 @@ const PUBLIC_NAV = [
   { to: "/a-propos", label: "À propos" },
   { to: "/comment-ca-marche", label: "Comment ça marche" },
   { to: "/formules", label: "Formules" },
+  { to: "/associations", label: "Associations" },
   { to: "/faq", label: "FAQ" },
   { to: "/contact", label: "Contact" },
 ] as const;
@@ -124,6 +125,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
               <li><Link to="/a-propos" className="hover:text-gold">À propos</Link></li>
               <li><Link to="/comment-ca-marche" className="hover:text-gold">Comment ça marche</Link></li>
               <li><Link to="/formules" className="hover:text-gold">Formules</Link></li>
+              <li><Link to="/associations" className="hover:text-gold">Associations</Link></li>
               <li><Link to="/verification" className="hover:text-gold">Vérifier un membre</Link></li>
             </ul>
           </div>
