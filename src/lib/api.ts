@@ -213,8 +213,8 @@ export async function uploadDossierDoc(file: File, dossierId: string) {
 
 // ====== Nouveaux hooks (tolérants : tables optionnelles) ======
 
-const safe = async <T,>(fn: () => Promise<{ data: T | null; error: any }>): Promise<T | null> => {
-  try { const r = await fn(); if (r.error) return null; return r.data; } catch { return null; }
+const safe = async (fn: () => any): Promise<any[]> => {
+  try { const r = await fn(); if (r.error) return []; return (r.data as any[]) ?? []; } catch { return []; }
 };
 
 export function useAyantsDroit(membreId?: string) {
