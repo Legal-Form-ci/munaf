@@ -198,7 +198,7 @@ function AyantsManager({ membreId, items }: any) {
           </div>
         ))}
       </div>
-      {form && <AyantForm value={form} onClose={() => setForm(null)} onSave={(v) => up.mutate(v, { onSuccess: () => { setForm(null); toast.success("Enregistré"); } })} />}
+      {form && <AyantForm value={form} onClose={() => setForm(null)} onSave={(v: any) => up.mutate(v, { onSuccess: () => { setForm(null); toast.success("Enregistré"); } })} />}
     </div>
   );
 }
@@ -251,7 +251,7 @@ function BeneficiairesManager({ membreId, items }: any) {
           </div>
         ))}
       </div>
-      {form && <BenefForm value={form} onClose={() => setForm(null)} onSave={(v) => up.mutate(v, { onSuccess: () => { setForm(null); toast.success("Enregistré"); } })} />}
+      {form && <BenefForm value={form} onClose={() => setForm(null)} onSave={(v: any) => up.mutate(v, { onSuccess: () => { setForm(null); toast.success("Enregistré"); } })} />}
     </div>
   );
 }
