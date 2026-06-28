@@ -10,7 +10,7 @@ export const STATUS_LABEL: Record<string, string> = {
 };
 export const DOSSIER_LABEL: Record<string, string> = {
   declare: "Déclaré", verification: "Vérification", valide: "Validé",
-  transmis: "Transmis", assistance_versee: "Assistance versée",
+  transmis: "Transmis NSIA", assistance_versee: "Assistance versée",
   cloture: "Clôturé", rejete: "Rejeté",
 };
 export const COT_LABEL: Record<string, string> = {
@@ -20,13 +20,15 @@ export const COT_LABEL: Record<string, string> = {
 export const formatFcfa = (n: number) =>
   new Intl.NumberFormat("fr-FR").format(n) + " FCFA";
 
-export function useMembers(filters?: { status?: string; quartier?: string; q?: string }) {
+export function useMembers(filters?: { status?: string; quartier?: string; q?: string; association_id?: string; delegue_id?: string }) {
   return useQuery({
     queryKey: ["membres", filters],
     queryFn: async () => {
       let q = supabase.from("membres").select("*").order("created_at", { ascending: false }).limit(2000);
       if (filters?.status) q = q.eq("status", filters.status as any);
       if (filters?.quartier) q = q.eq("quartier", filters.quartier);
+      if (filters?.association_id) q = (q as any).eq("association_id", filters.association_id);
+      if (filters?.delegue_id) q = (q as any).eq("delegue_id", filters.delegue_id);
       if (filters?.q) q = q.or(`nom.ilike.%${filters.q}%,prenom.ilike.%${filters.q}%,matricule.ilike.%${filters.q}%,telephone.ilike.%${filters.q}%`);
       const { data, error } = await q;
       if (error) throw error;
@@ -90,7 +92,7 @@ export function useDossiers(status?: string) {
   return useQuery({
     queryKey: ["dossiers", status],
     queryFn: async () => {
-      let q = supabase.from("dossiers").select("*, membres(nom,prenom,matricule,quartier,formule,photo_url)").order("created_at", { ascending: false });
+      let q = supabase.from("dossiers").select("*, membres(nom,prenom,matricule,quartier,formule,photo_url,association_id)").order("created_at", { ascending: false });
       if (status) q = q.eq("status", status as any);
       const { data, error } = await q;
       if (error) throw error;
@@ -207,4 +209,173 @@ export async function uploadDossierDoc(file: File, dossierId: string) {
   if (error) throw error;
   await supabase.from("dossier_documents").insert({ dossier_id: dossierId, type: file.type, storage_path: path });
   return path;
+}
+
+// ====== Nouveaux hooks (tolérants : tables optionnelles) ======
+
+const safe = async <T,>(fn: () => Promise<{ data: T | null; error: any }>): Promise<T | null> => {
+  try { const r = await fn(); if (r.error) return null; return r.data; } catch { return null; }
+};
+
+export function useAyantsDroit(membreId?: string) {
+  return useQuery({
+    queryKey: ["ayants_droit", membreId],
+    queryFn: async () => safe(() => (supabase as any).from("ayants_droit").select("*").eq("membre_id", membreId!).order("niveau")) ?? [],
+    enabled: !!membreId,
+  });
+}
+
+export function useBeneficiaires(membreId?: string) {
+  return useQuery({
+    queryKey: ["beneficiaires", membreId],
+    queryFn: async () => safe(() => (supabase as any).from("beneficiaires").select("*").eq("membre_id", membreId!)) ?? [],
+    enabled: !!membreId,
+  });
+}
+
+export function useNotifications(userId?: string) {
+  return useQuery({
+    queryKey: ["notifications", userId],
+    queryFn: async () => safe(() => (supabase as any).from("notifications").select("*").eq("user_id", userId!).order("created_at", { ascending: false }).limit(50)) ?? [],
+    enabled: !!userId,
+  });
+}
+
+export function useMarkNotifLue() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await (supabase as any).from("notifications").update({ lu: true }).eq("id", id);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["notifications"] }),
+  });
+}
+
+export function useAssociations() {
+  return useQuery({
+    queryKey: ["associations"],
+    queryFn: async () => safe(() => (supabase as any).from("associations").select("*").order("created_at", { ascending: false })) ?? [],
+  });
+}
+
+export function useUpsertAyantDroit() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (p: any) => {
+      const { id, ...rest } = p;
+      if (id) await (supabase as any).from("ayants_droit").update(rest).eq("id", id);
+      else await (supabase as any).from("ayants_droit").insert(rest);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["ayants_droit"] }),
+  });
+}
+
+export function useDeleteAyantDroit() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => { await (supabase as any).from("ayants_droit").delete().eq("id", id); },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["ayants_droit"] }),
+  });
+}
+
+export function useUpsertBeneficiaire() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (p: any) => {
+      const { id, ...rest } = p;
+      if (id) await (supabase as any).from("beneficiaires").update(rest).eq("id", id);
+      else await (supabase as any).from("beneficiaires").insert(rest);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["beneficiaires"] }),
+  });
+}
+
+export function useDeleteBeneficiaire() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => { await (supabase as any).from("beneficiaires").delete().eq("id", id); },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["beneficiaires"] }),
+  });
+}
+
+export function useUpsertAssociation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (p: any) => {
+      const { id, ...rest } = p;
+      if (id) await (supabase as any).from("associations").update(rest).eq("id", id);
+      else await (supabase as any).from("associations").insert(rest);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["associations"] }),
+  });
+}
+
+export function useAuditLog(limit = 200) {
+  return useQuery({
+    queryKey: ["audit_log", limit],
+    queryFn: async () => safe(() => (supabase as any).from("audit_log").select("*").order("created_at", { ascending: false }).limit(limit)) ?? [],
+  });
+}
+
+export function useNsiaSync(limit = 200) {
+  return useQuery({
+    queryKey: ["nsia_sync", limit],
+    queryFn: async () => safe(() => (supabase as any).from("nsia_sync").select("*, dossiers(numero,status), membres(nom,prenom,matricule)").order("created_at", { ascending: false }).limit(limit)) ?? [],
+  });
+}
+
+export function useCreateNsiaSync() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (p: any) => { await (supabase as any).from("nsia_sync").insert(p); },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["nsia_sync"] }),
+  });
+}
+
+export function useParametres() {
+  return useQuery({
+    queryKey: ["parametres"],
+    queryFn: async () => safe(() => (supabase as any).from("parametres").select("*").order("cle")) ?? [],
+  });
+}
+
+export function useUpdateParametre() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (p: { cle: string; valeur: any }) => {
+      await (supabase as any).from("parametres").update({ valeur: p.valeur }).eq("cle", p.cle);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["parametres"] }),
+  });
+}
+
+export function usePaiementsAssistance(dossierId?: string) {
+  return useQuery({
+    queryKey: ["paiements", dossierId],
+    queryFn: async () => {
+      const q = (supabase as any).from("paiements_assistance").select("*").order("date_paiement", { ascending: false });
+      const final = dossierId ? q.eq("dossier_id", dossierId) : q.limit(200);
+      return safe(() => final) ?? [];
+    },
+  });
+}
+
+export function useCreatePaiement() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (p: any) => { await (supabase as any).from("paiements_assistance").insert(p); },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["paiements"] }),
+  });
+}
+
+export async function logAudit(action: string, entite: string, entite_id?: string, details?: any) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    await (supabase as any).from("audit_log").insert({
+      user_id: user.id,
+      user_label: user.user_metadata?.username ?? user.email,
+      action, entite, entite_id, details,
+    });
+  } catch {}
 }
