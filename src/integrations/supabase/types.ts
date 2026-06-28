@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          message: string
+          nom: string
+          status: string
+          sujet: string
+          telephone: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          message: string
+          nom: string
+          status?: string
+          sujet: string
+          telephone: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          message?: string
+          nom?: string
+          status?: string
+          sujet?: string
+          telephone?: string
+        }
+        Relationships: []
+      }
       cotisations: {
         Row: {
           created_at: string
