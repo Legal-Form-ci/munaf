@@ -14,6 +14,193 @@ export type Database = {
   }
   public: {
     Tables: {
+      associations: {
+        Row: {
+          admin_user_id: string | null
+          compte_mobile_money: string | null
+          created_at: string
+          email: string | null
+          id: string
+          logo_url: string | null
+          nom: string
+          numero_registre: string | null
+          quartier: string
+          representant_nom: string
+          representant_telephone: string
+          status: string
+          total_membres: number
+          type: string
+          updated_at: string
+          ville: string
+        }
+        Insert: {
+          admin_user_id?: string | null
+          compte_mobile_money?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          nom: string
+          numero_registre?: string | null
+          quartier: string
+          representant_nom: string
+          representant_telephone: string
+          status?: string
+          total_membres?: number
+          type?: string
+          updated_at?: string
+          ville?: string
+        }
+        Update: {
+          admin_user_id?: string | null
+          compte_mobile_money?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          nom?: string
+          numero_registre?: string | null
+          quartier?: string
+          representant_nom?: string
+          representant_telephone?: string
+          status?: string
+          total_membres?: number
+          type?: string
+          updated_at?: string
+          ville?: string
+        }
+        Relationships: []
+      }
+      audit_log: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          entite: string
+          entite_id: string | null
+          id: string
+          ip: string | null
+          user_id: string | null
+          user_label: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          entite: string
+          entite_id?: string | null
+          id?: string
+          ip?: string | null
+          user_id?: string | null
+          user_label?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          entite?: string
+          entite_id?: string | null
+          id?: string
+          ip?: string | null
+          user_id?: string | null
+          user_label?: string | null
+        }
+        Relationships: []
+      }
+      ayants_droit: {
+        Row: {
+          created_at: string
+          date_naissance: string | null
+          id: string
+          lien: string
+          membre_id: string
+          niveau: string
+          nom: string
+          prenom: string
+          telephone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date_naissance?: string | null
+          id?: string
+          lien: string
+          membre_id: string
+          niveau?: string
+          nom: string
+          prenom: string
+          telephone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date_naissance?: string | null
+          id?: string
+          lien?: string
+          membre_id?: string
+          niveau?: string
+          nom?: string
+          prenom?: string
+          telephone?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ayants_droit_membre_id_fkey"
+            columns: ["membre_id"]
+            isOneToOne: false
+            referencedRelation: "membres"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      beneficiaires: {
+        Row: {
+          compte_mobile_money: string | null
+          created_at: string
+          id: string
+          lien: string
+          membre_id: string
+          nom: string
+          prenom: string
+          quote_part: number
+          telephone: string
+          updated_at: string
+        }
+        Insert: {
+          compte_mobile_money?: string | null
+          created_at?: string
+          id?: string
+          lien: string
+          membre_id: string
+          nom: string
+          prenom: string
+          quote_part?: number
+          telephone: string
+          updated_at?: string
+        }
+        Update: {
+          compte_mobile_money?: string | null
+          created_at?: string
+          id?: string
+          lien?: string
+          membre_id?: string
+          nom?: string
+          prenom?: string
+          quote_part?: number
+          telephone?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "beneficiaires_membre_id_fkey"
+            columns: ["membre_id"]
+            isOneToOne: false
+            referencedRelation: "membres"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_messages: {
         Row: {
           created_at: string
@@ -205,7 +392,10 @@ export type Database = {
       }
       membres: {
         Row: {
+          adresse_complete: string | null
           association: string | null
+          association_id: string | null
+          cni: string | null
           created_at: string
           date_adhesion: string
           date_deces: string | null
@@ -230,7 +420,10 @@ export type Database = {
           ville: string
         }
         Insert: {
+          adresse_complete?: string | null
           association?: string | null
+          association_id?: string | null
+          cni?: string | null
           created_at?: string
           date_adhesion?: string
           date_deces?: string | null
@@ -255,7 +448,10 @@ export type Database = {
           ville?: string
         }
         Update: {
+          adresse_complete?: string | null
           association?: string | null
+          association_id?: string | null
+          cni?: string | null
           created_at?: string
           date_adhesion?: string
           date_deces?: string | null
@@ -278,6 +474,172 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
           ville?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membres_association_id_fkey"
+            columns: ["association_id"]
+            isOneToOne: false
+            referencedRelation: "associations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          lien: string | null
+          lu: boolean
+          message: string
+          titre: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lien?: string | null
+          lu?: boolean
+          message: string
+          titre: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lien?: string | null
+          lu?: boolean
+          message?: string
+          titre?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      nsia_sync: {
+        Row: {
+          created_at: string
+          dossier_id: string | null
+          id: string
+          membre_id: string | null
+          message: string | null
+          payload: Json | null
+          response: Json | null
+          status: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          dossier_id?: string | null
+          id?: string
+          membre_id?: string | null
+          message?: string | null
+          payload?: Json | null
+          response?: Json | null
+          status?: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          dossier_id?: string | null
+          id?: string
+          membre_id?: string | null
+          message?: string | null
+          payload?: Json | null
+          response?: Json | null
+          status?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nsia_sync_dossier_id_fkey"
+            columns: ["dossier_id"]
+            isOneToOne: false
+            referencedRelation: "dossiers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nsia_sync_membre_id_fkey"
+            columns: ["membre_id"]
+            isOneToOne: false
+            referencedRelation: "membres"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      paiements_assistance: {
+        Row: {
+          beneficiaire_nom: string | null
+          compte_destination: string | null
+          created_at: string
+          created_by: string | null
+          date_paiement: string
+          dossier_id: string
+          id: string
+          montant: number
+          notes: string | null
+          reference: string | null
+          type: string
+        }
+        Insert: {
+          beneficiaire_nom?: string | null
+          compte_destination?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_paiement?: string
+          dossier_id: string
+          id?: string
+          montant: number
+          notes?: string | null
+          reference?: string | null
+          type: string
+        }
+        Update: {
+          beneficiaire_nom?: string | null
+          compte_destination?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_paiement?: string
+          dossier_id?: string
+          id?: string
+          montant?: number
+          notes?: string | null
+          reference?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paiements_assistance_dossier_id_fkey"
+            columns: ["dossier_id"]
+            isOneToOne: false
+            referencedRelation: "dossiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parametres: {
+        Row: {
+          cle: string
+          description: string | null
+          updated_at: string
+          updated_by: string | null
+          valeur: Json
+        }
+        Insert: {
+          cle: string
+          description?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          valeur: Json
+        }
+        Update: {
+          cle?: string
+          description?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          valeur?: Json
         }
         Relationships: []
       }
@@ -341,6 +703,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      stats_admin: { Args: never; Returns: Json }
       stats_publiques: {
         Args: never
         Returns: {
@@ -367,7 +730,14 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "delegue" | "membre"
+      app_role:
+        | "admin"
+        | "delegue"
+        | "membre"
+        | "super_admin"
+        | "association"
+        | "nsia"
+        | "equipe"
       cotisation_status: "payee" | "en_attente" | "en_retard"
       dossier_status:
         | "declare"
@@ -512,7 +882,15 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "delegue", "membre"],
+      app_role: [
+        "admin",
+        "delegue",
+        "membre",
+        "super_admin",
+        "association",
+        "nsia",
+        "equipe",
+      ],
       cotisation_status: ["payee", "en_attente", "en_retard"],
       dossier_status: [
         "declare",
