@@ -2,8 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { useMembers, useUpsertMembre, useDeleteMembre, uploadMemberPhoto, STATUS_LABEL, formatFcfa, FORMULE_VALUE } from "@/lib/api";
 import { useState } from "react";
-import { Search, UserPlus, Loader2, Pencil, Trash2, X, Upload } from "lucide-react";
+import { Search, UserPlus, Loader2, Pencil, Trash2, X, Upload, IdCard, FileSignature } from "lucide-react";
+import { generateCarteMembre, generateAttestation } from "@/lib/pdf";
 import { toast } from "sonner";
+
 
 export const Route = createFileRoute("/admin/membres")({
   head: () => ({ meta: [{ title: "Membres — MuNAF" }] }),
@@ -87,10 +89,13 @@ function MembersPage() {
                   <td className="px-4 py-3 hidden lg:table-cell font-mono text-xs">{m.telephone}</td>
                   <td className="px-4 py-3">{formatFcfa(FORMULE_VALUE[m.formule])}</td>
                   <td className="px-4 py-3"><span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusClasses(m.status)}`}>{STATUS_LABEL[m.status]}</span></td>
-                  <td className="px-4 py-3 text-right">
-                    <button onClick={() => setEdit(m)} className="p-2 rounded hover:bg-muted"><Pencil className="size-4" /></button>
-                    <button onClick={() => { if (confirm(`Supprimer ${m.prenom} ${m.nom} ?`)) del.mutate(m.id, { onSuccess: () => toast.success("Membre supprimé") }); }} className="p-2 rounded hover:bg-destructive/10 text-destructive"><Trash2 className="size-4" /></button>
+                  <td className="px-4 py-3 text-right whitespace-nowrap">
+                    <button title="Carte membre PDF" onClick={() => generateCarteMembre(m).then(() => toast.success("Carte téléchargée")).catch(() => toast.error("Erreur PDF"))} className="p-2 rounded hover:bg-muted"><IdCard className="size-4" /></button>
+                    <button title="Attestation PDF" onClick={() => generateAttestation(m).then(() => toast.success("Attestation téléchargée")).catch(() => toast.error("Erreur PDF"))} className="p-2 rounded hover:bg-muted"><FileSignature className="size-4" /></button>
+                    <button title="Modifier" onClick={() => setEdit(m)} className="p-2 rounded hover:bg-muted"><Pencil className="size-4" /></button>
+                    <button title="Supprimer" onClick={() => { if (confirm(`Supprimer ${m.prenom} ${m.nom} ?`)) del.mutate(m.id, { onSuccess: () => toast.success("Membre supprimé") }); }} className="p-2 rounded hover:bg-destructive/10 text-destructive"><Trash2 className="size-4" /></button>
                   </td>
+
                 </tr>
               ))}
             </tbody>
