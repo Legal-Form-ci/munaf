@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import {
   Loader2, LogOut, ShieldCheck, Wallet, FileText, Users, Bell, Plus,
-  Trash2, Heart, Home, FileUp,
+  Trash2, Heart, Home, FileUp, IdCard, FileSignature,
 } from "lucide-react";
 import logo from "@/assets/munaf-logo.png";
 import {
@@ -14,7 +14,9 @@ import {
   useUpsertAyantDroit, useDeleteAyantDroit, useUpsertBeneficiaire, useDeleteBeneficiaire,
   useUpsertDossier, logAudit,
 } from "@/lib/api";
+import { generateCarteMembre, generateAttestation } from "@/lib/pdf";
 import { toast } from "sonner";
+
 
 export const Route = createFileRoute("/membre")({
   head: () => ({ meta: [{ title: "Espace membre — MuNAF" }] }),
@@ -120,17 +122,32 @@ function MembrePage() {
 }
 
 function ProfilCard({ membre }: any) {
+  const dl = async (kind: "carte" | "attestation") => {
+    try {
+      if (kind === "carte") await generateCarteMembre(membre);
+      else await generateAttestation(membre);
+      toast.success(`${kind === "carte" ? "Carte membre" : "Attestation"} téléchargée`);
+    } catch (e: any) { toast.error(e?.message ?? "Erreur génération PDF"); }
+  };
   return (
     <>
-      <div className="rounded-2xl border bg-card p-6 flex items-start gap-5">
+      <div className="rounded-2xl border bg-card p-6 flex items-start gap-5 flex-wrap">
         {membre.photo_url ? <img src={membre.photo_url} className="size-20 rounded-full object-cover" alt="" /> : <div className="size-20 rounded-full bg-muted" />}
-        <div className="flex-1">
+        <div className="flex-1 min-w-[200px]">
           <h1 className="font-display font-bold text-2xl">{membre.prenom} {membre.nom}</h1>
           <div className="text-sm text-muted-foreground">Matricule <span className="font-mono">{membre.matricule}</span> · {membre.quartier}</div>
           <div className="mt-3 flex gap-2 flex-wrap">
             <span className="text-xs px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 font-semibold">{STATUS_LABEL[membre.status]}</span>
             <span className="text-xs px-2 py-1 rounded-full bg-accent text-primary font-semibold">Capital {formatFcfa(FORMULE_VALUE[membre.formule] ?? 0)}</span>
           </div>
+        </div>
+        <div className="flex flex-col gap-2 w-full sm:w-auto">
+          <button onClick={() => dl("carte")} className="h-10 px-3 rounded-lg bg-primary text-primary-foreground text-xs font-semibold inline-flex items-center justify-center gap-2">
+            <IdCard className="size-4" /> Télécharger ma carte
+          </button>
+          <button onClick={() => dl("attestation")} className="h-10 px-3 rounded-lg border text-xs font-semibold inline-flex items-center justify-center gap-2 hover:bg-muted">
+            <FileSignature className="size-4" /> Attestation (PDF)
+          </button>
         </div>
       </div>
       <div className="grid sm:grid-cols-3 gap-3 mt-5">
@@ -141,6 +158,7 @@ function ProfilCard({ membre }: any) {
     </>
   );
 }
+
 
 function InfoCell({ label, value }: any) {
   return <div className="rounded-xl border bg-card p-4"><div className="text-xs uppercase tracking-wide text-muted-foreground font-semibold">{label}</div><div className="text-sm font-medium mt-1">{value}</div></div>;
