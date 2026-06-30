@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VerificationRouteImport } from './routes/verification'
+import { Route as NsiaApiRouteImport } from './routes/nsia-api'
 import { Route as NsiaRouteImport } from './routes/nsia'
 import { Route as MembreRouteImport } from './routes/membre'
 import { Route as FormulesRouteImport } from './routes/formules'
@@ -31,10 +32,19 @@ import { Route as AdminDossiersRouteImport } from './routes/admin.dossiers'
 import { Route as AdminCotisationsRouteImport } from './routes/admin.cotisations'
 import { Route as AdminAuditRouteImport } from './routes/admin.audit'
 import { Route as AdminAssociationsRouteImport } from './routes/admin.associations'
+import { Route as ApiPublicNsiaWebhookRouteImport } from './routes/api.public.nsia.webhook'
+import { Route as ApiPublicNsiaHealthRouteImport } from './routes/api.public.nsia.health'
+import { Route as ApiPublicNsiaDossiersRouteImport } from './routes/api.public.nsia.dossiers'
+import { Route as ApiPublicNsiaDossiersIdRouteImport } from './routes/api.public.nsia.dossiers.$id'
 
 const VerificationRoute = VerificationRouteImport.update({
   id: '/verification',
   path: '/verification',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NsiaApiRoute = NsiaApiRouteImport.update({
+  id: '/nsia-api',
+  path: '/nsia-api',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NsiaRoute = NsiaRouteImport.update({
@@ -142,6 +152,26 @@ const AdminAssociationsRoute = AdminAssociationsRouteImport.update({
   path: '/admin/associations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicNsiaWebhookRoute = ApiPublicNsiaWebhookRouteImport.update({
+  id: '/api/public/nsia/webhook',
+  path: '/api/public/nsia/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicNsiaHealthRoute = ApiPublicNsiaHealthRouteImport.update({
+  id: '/api/public/nsia/health',
+  path: '/api/public/nsia/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicNsiaDossiersRoute = ApiPublicNsiaDossiersRouteImport.update({
+  id: '/api/public/nsia/dossiers',
+  path: '/api/public/nsia/dossiers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicNsiaDossiersIdRoute = ApiPublicNsiaDossiersIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiPublicNsiaDossiersRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -156,6 +186,7 @@ export interface FileRoutesByFullPath {
   '/formules': typeof FormulesRoute
   '/membre': typeof MembreRoute
   '/nsia': typeof NsiaRoute
+  '/nsia-api': typeof NsiaApiRoute
   '/verification': typeof VerificationRoute
   '/admin/associations': typeof AdminAssociationsRoute
   '/admin/audit': typeof AdminAuditRoute
@@ -166,6 +197,10 @@ export interface FileRoutesByFullPath {
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/quartiers': typeof AdminQuartiersRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/public/nsia/dossiers': typeof ApiPublicNsiaDossiersRouteWithChildren
+  '/api/public/nsia/health': typeof ApiPublicNsiaHealthRoute
+  '/api/public/nsia/webhook': typeof ApiPublicNsiaWebhookRoute
+  '/api/public/nsia/dossiers/$id': typeof ApiPublicNsiaDossiersIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -180,6 +215,7 @@ export interface FileRoutesByTo {
   '/formules': typeof FormulesRoute
   '/membre': typeof MembreRoute
   '/nsia': typeof NsiaRoute
+  '/nsia-api': typeof NsiaApiRoute
   '/verification': typeof VerificationRoute
   '/admin/associations': typeof AdminAssociationsRoute
   '/admin/audit': typeof AdminAuditRoute
@@ -190,6 +226,10 @@ export interface FileRoutesByTo {
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/quartiers': typeof AdminQuartiersRoute
   '/admin': typeof AdminIndexRoute
+  '/api/public/nsia/dossiers': typeof ApiPublicNsiaDossiersRouteWithChildren
+  '/api/public/nsia/health': typeof ApiPublicNsiaHealthRoute
+  '/api/public/nsia/webhook': typeof ApiPublicNsiaWebhookRoute
+  '/api/public/nsia/dossiers/$id': typeof ApiPublicNsiaDossiersIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -205,6 +245,7 @@ export interface FileRoutesById {
   '/formules': typeof FormulesRoute
   '/membre': typeof MembreRoute
   '/nsia': typeof NsiaRoute
+  '/nsia-api': typeof NsiaApiRoute
   '/verification': typeof VerificationRoute
   '/admin/associations': typeof AdminAssociationsRoute
   '/admin/audit': typeof AdminAuditRoute
@@ -215,6 +256,10 @@ export interface FileRoutesById {
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/quartiers': typeof AdminQuartiersRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/public/nsia/dossiers': typeof ApiPublicNsiaDossiersRouteWithChildren
+  '/api/public/nsia/health': typeof ApiPublicNsiaHealthRoute
+  '/api/public/nsia/webhook': typeof ApiPublicNsiaWebhookRoute
+  '/api/public/nsia/dossiers/$id': typeof ApiPublicNsiaDossiersIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -231,6 +276,7 @@ export interface FileRouteTypes {
     | '/formules'
     | '/membre'
     | '/nsia'
+    | '/nsia-api'
     | '/verification'
     | '/admin/associations'
     | '/admin/audit'
@@ -241,6 +287,10 @@ export interface FileRouteTypes {
     | '/admin/parametres'
     | '/admin/quartiers'
     | '/admin/'
+    | '/api/public/nsia/dossiers'
+    | '/api/public/nsia/health'
+    | '/api/public/nsia/webhook'
+    | '/api/public/nsia/dossiers/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -255,6 +305,7 @@ export interface FileRouteTypes {
     | '/formules'
     | '/membre'
     | '/nsia'
+    | '/nsia-api'
     | '/verification'
     | '/admin/associations'
     | '/admin/audit'
@@ -265,6 +316,10 @@ export interface FileRouteTypes {
     | '/admin/parametres'
     | '/admin/quartiers'
     | '/admin'
+    | '/api/public/nsia/dossiers'
+    | '/api/public/nsia/health'
+    | '/api/public/nsia/webhook'
+    | '/api/public/nsia/dossiers/$id'
   id:
     | '__root__'
     | '/'
@@ -279,6 +334,7 @@ export interface FileRouteTypes {
     | '/formules'
     | '/membre'
     | '/nsia'
+    | '/nsia-api'
     | '/verification'
     | '/admin/associations'
     | '/admin/audit'
@@ -289,6 +345,10 @@ export interface FileRouteTypes {
     | '/admin/parametres'
     | '/admin/quartiers'
     | '/admin/'
+    | '/api/public/nsia/dossiers'
+    | '/api/public/nsia/health'
+    | '/api/public/nsia/webhook'
+    | '/api/public/nsia/dossiers/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -304,6 +364,7 @@ export interface RootRouteChildren {
   FormulesRoute: typeof FormulesRoute
   MembreRoute: typeof MembreRoute
   NsiaRoute: typeof NsiaRoute
+  NsiaApiRoute: typeof NsiaApiRoute
   VerificationRoute: typeof VerificationRoute
   AdminAssociationsRoute: typeof AdminAssociationsRoute
   AdminAuditRoute: typeof AdminAuditRoute
@@ -314,6 +375,9 @@ export interface RootRouteChildren {
   AdminParametresRoute: typeof AdminParametresRoute
   AdminQuartiersRoute: typeof AdminQuartiersRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  ApiPublicNsiaDossiersRoute: typeof ApiPublicNsiaDossiersRouteWithChildren
+  ApiPublicNsiaHealthRoute: typeof ApiPublicNsiaHealthRoute
+  ApiPublicNsiaWebhookRoute: typeof ApiPublicNsiaWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -323,6 +387,13 @@ declare module '@tanstack/react-router' {
       path: '/verification'
       fullPath: '/verification'
       preLoaderRoute: typeof VerificationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nsia-api': {
+      id: '/nsia-api'
+      path: '/nsia-api'
+      fullPath: '/nsia-api'
+      preLoaderRoute: typeof NsiaApiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/nsia': {
@@ -472,8 +543,49 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAssociationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/nsia/webhook': {
+      id: '/api/public/nsia/webhook'
+      path: '/api/public/nsia/webhook'
+      fullPath: '/api/public/nsia/webhook'
+      preLoaderRoute: typeof ApiPublicNsiaWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/nsia/health': {
+      id: '/api/public/nsia/health'
+      path: '/api/public/nsia/health'
+      fullPath: '/api/public/nsia/health'
+      preLoaderRoute: typeof ApiPublicNsiaHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/nsia/dossiers': {
+      id: '/api/public/nsia/dossiers'
+      path: '/api/public/nsia/dossiers'
+      fullPath: '/api/public/nsia/dossiers'
+      preLoaderRoute: typeof ApiPublicNsiaDossiersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/nsia/dossiers/$id': {
+      id: '/api/public/nsia/dossiers/$id'
+      path: '/$id'
+      fullPath: '/api/public/nsia/dossiers/$id'
+      preLoaderRoute: typeof ApiPublicNsiaDossiersIdRouteImport
+      parentRoute: typeof ApiPublicNsiaDossiersRoute
+    }
   }
 }
+
+interface ApiPublicNsiaDossiersRouteChildren {
+  ApiPublicNsiaDossiersIdRoute: typeof ApiPublicNsiaDossiersIdRoute
+}
+
+const ApiPublicNsiaDossiersRouteChildren: ApiPublicNsiaDossiersRouteChildren = {
+  ApiPublicNsiaDossiersIdRoute: ApiPublicNsiaDossiersIdRoute,
+}
+
+const ApiPublicNsiaDossiersRouteWithChildren =
+  ApiPublicNsiaDossiersRoute._addFileChildren(
+    ApiPublicNsiaDossiersRouteChildren,
+  )
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -488,6 +600,7 @@ const rootRouteChildren: RootRouteChildren = {
   FormulesRoute: FormulesRoute,
   MembreRoute: MembreRoute,
   NsiaRoute: NsiaRoute,
+  NsiaApiRoute: NsiaApiRoute,
   VerificationRoute: VerificationRoute,
   AdminAssociationsRoute: AdminAssociationsRoute,
   AdminAuditRoute: AdminAuditRoute,
@@ -498,6 +611,9 @@ const rootRouteChildren: RootRouteChildren = {
   AdminParametresRoute: AdminParametresRoute,
   AdminQuartiersRoute: AdminQuartiersRoute,
   AdminIndexRoute: AdminIndexRoute,
+  ApiPublicNsiaDossiersRoute: ApiPublicNsiaDossiersRouteWithChildren,
+  ApiPublicNsiaHealthRoute: ApiPublicNsiaHealthRoute,
+  ApiPublicNsiaWebhookRoute: ApiPublicNsiaWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

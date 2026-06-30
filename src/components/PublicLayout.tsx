@@ -10,9 +10,11 @@ const PUBLIC_NAV = [
   { to: "/comment-ca-marche", label: "Comment ça marche" },
   { to: "/formules", label: "Formules" },
   { to: "/associations", label: "Associations" },
+  { to: "/nsia-api", label: "API NSIA" },
   { to: "/faq", label: "FAQ" },
   { to: "/contact", label: "Contact" },
 ] as const;
+
 
 export function PublicLayout({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
