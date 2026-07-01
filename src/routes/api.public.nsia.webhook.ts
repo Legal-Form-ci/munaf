@@ -18,7 +18,7 @@ export const Route = createFileRoute("/api/public/nsia/webhook")({
     handlers: {
       OPTIONS: async () => optionsResponse(),
       POST: async ({ request }) => {
-        const guard = requireNsiaKey(request); if (guard) return guard;
+        const guard = await requireNsiaKey(request); if (guard) return guard;
         let body: any = {};
         try { body = await request.json(); } catch { return jsonResponse({ error: "invalid_json" }, 400); }
         const { event, dossier_id, numero, data } = body ?? {};
