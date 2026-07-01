@@ -16,6 +16,8 @@ const NAV_BASE = [
   { to: "/admin/associations", label: "Associations", icon: Building2, roles: ["admin","super_admin"] },
   { to: "/admin/quartiers", label: "Quartiers & délégués", icon: MapPin, roles: ["admin","super_admin"] },
   { to: "/admin/nsia", label: "Intégration NSIA", icon: Cable, roles: ["admin","super_admin"] },
+  { to: "/admin/nsia-integration", label: "API & Webhooks NSIA", icon: KeyRound, roles: ["super_admin"] },
+  { to: "/admin/alertes", label: "Alertes", icon: AlertTriangle, roles: ["admin","super_admin","equipe"] },
   { to: "/admin/audit", label: "Journal d'audit", icon: ScrollText, roles: ["admin","super_admin"] },
   { to: "/admin/parametres", label: "Paramètres", icon: Settings, roles: ["super_admin"] },
   { to: "/verification", label: "Portail public", icon: ShieldCheck, roles: ["admin","super_admin","equipe"] },
