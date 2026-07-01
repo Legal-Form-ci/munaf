@@ -401,3 +401,98 @@ SELECT tablename,
        (SELECT count(*) FROM pg_policies WHERE schemaname='public' AND tablename=t.tablename) AS policies
 FROM pg_tables t WHERE schemaname='public' ORDER BY tablename;
 ```
+
+---
+
+## 14. Intégration NSIA — Clés API, Webhooks & Alertes (nouveau)
+
+```sql
+-- 14.1 Clés API NSIA (générées et révoquées par le super-admin)
+CREATE TABLE IF NOT EXISTS public.nsia_api_keys (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  label TEXT NOT NULL,
+  key_prefix TEXT NOT NULL,          -- 8 premiers caractères visibles
+  key_hash TEXT NOT NULL,            -- SHA-256 hex
+  scopes TEXT[] NOT NULL DEFAULT ARRAY['dossiers:read','dossiers:write','webhook:receive'],
+  environment TEXT NOT NULL DEFAULT 'production', -- production | sandbox
+  active BOOLEAN NOT NULL DEFAULT true,
+  last_used_at TIMESTAMPTZ,
+  created_by UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  revoked_at TIMESTAMPTZ
+);
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.nsia_api_keys TO authenticated;
+GRANT ALL ON public.nsia_api_keys TO service_role;
+ALTER TABLE public.nsia_api_keys ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "admin manage keys" ON public.nsia_api_keys FOR ALL TO authenticated
+  USING (public.has_role(auth.uid(),'admin') OR public.has_role(auth.uid(),'super_admin'))
+  WITH CHECK (public.has_role(auth.uid(),'admin') OR public.has_role(auth.uid(),'super_admin'));
+
+-- 14.2 Webhooks sortants MuNAF → NSIA (souscriptions gérées par le super-admin)
+CREATE TABLE IF NOT EXISTS public.nsia_webhooks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  label TEXT NOT NULL,
+  url TEXT NOT NULL,
+  secret TEXT NOT NULL,              -- signature HMAC SHA-256
+  events TEXT[] NOT NULL DEFAULT ARRAY['dossier.transmis','dossier.updated'],
+  active BOOLEAN NOT NULL DEFAULT true,
+  last_delivery_at TIMESTAMPTZ,
+  last_status INT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.nsia_webhooks TO authenticated;
+GRANT ALL ON public.nsia_webhooks TO service_role;
+ALTER TABLE public.nsia_webhooks ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "admin manage webhooks" ON public.nsia_webhooks FOR ALL TO authenticated
+  USING (public.has_role(auth.uid(),'admin') OR public.has_role(auth.uid(),'super_admin'))
+  WITH CHECK (public.has_role(auth.uid(),'admin') OR public.has_role(auth.uid(),'super_admin'));
+
+-- 14.3 Alertes système (écarts NSIA, anomalies…)
+CREATE TABLE IF NOT EXISTS public.alertes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  type TEXT NOT NULL,                -- drift_no_response | status_mismatch | api_failure | webhook_failure
+  severity TEXT NOT NULL DEFAULT 'warning', -- info | warning | critical
+  titre TEXT NOT NULL,
+  message TEXT,
+  dossier_id UUID REFERENCES public.dossiers(id) ON DELETE CASCADE,
+  payload JSONB,
+  resolue BOOLEAN NOT NULL DEFAULT false,
+  resolue_at TIMESTAMPTZ,
+  resolue_by UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS alertes_resolue_idx ON public.alertes(resolue, created_at DESC);
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.alertes TO authenticated;
+GRANT ALL ON public.alertes TO service_role;
+ALTER TABLE public.alertes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "admin read alertes" ON public.alertes FOR SELECT TO authenticated
+  USING (public.has_role(auth.uid(),'admin') OR public.has_role(auth.uid(),'super_admin') OR public.has_role(auth.uid(),'equipe'));
+CREATE POLICY "admin update alertes" ON public.alertes FOR UPDATE TO authenticated
+  USING (public.has_role(auth.uid(),'admin') OR public.has_role(auth.uid(),'super_admin'));
+CREATE POLICY "admin insert alertes" ON public.alertes FOR INSERT TO authenticated
+  WITH CHECK (public.has_role(auth.uid(),'admin') OR public.has_role(auth.uid(),'super_admin'));
+```
+
+## 15. Job cron de réconciliation NSIA (à exécuter via SQL Editor)
+
+```sql
+-- Prérequis : extensions
+CREATE EXTENSION IF NOT EXISTS pg_cron;
+CREATE EXTENSION IF NOT EXISTS pg_net;
+
+-- Toutes les heures, appelle le hook de réconciliation
+SELECT cron.schedule(
+  'nsia-reconcile-hourly',
+  '0 * * * *',
+  $$
+  SELECT net.http_post(
+    url:='https://project--5181194d-1285-432c-bbf7-5551442e2b31.lovable.app/api/public/hooks/nsia-reconcile',
+    headers:='{"Content-Type":"application/json"}'::jsonb,
+    body:='{}'::jsonb
+  );
+  $$
+);
+
+-- Pour annuler : SELECT cron.unschedule('nsia-reconcile-hourly');
+```
+
