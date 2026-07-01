@@ -379,3 +379,125 @@ export async function logAudit(action: string, entite: string, entite_id?: strin
     });
   } catch {}
 }
+
+// ============= NSIA API Keys / Webhooks / Alertes =============
+
+export function useNsiaApiKeys() {
+  return useQuery({
+    queryKey: ["nsia_api_keys"],
+    queryFn: async () => safe(() => (supabase as any).from("nsia_api_keys").select("*").order("created_at", { ascending: false })) ?? [],
+  });
+}
+
+async function sha256Hex(input: string) {
+  const buf = new TextEncoder().encode(input);
+  const hash = await crypto.subtle.digest("SHA-256", buf);
+  return Array.from(new Uint8Array(hash)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function randomKey() {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  return "nsia_" + Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+export function useCreateNsiaApiKey() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (p: { label: string; environment?: string; scopes?: string[] }) => {
+      const key = randomKey();
+      const key_hash = await sha256Hex(key);
+      const key_prefix = key.slice(0, 12);
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error } = await (supabase as any).from("nsia_api_keys").insert({
+        label: p.label,
+        environment: p.environment ?? "production",
+        scopes: p.scopes ?? ["dossiers:read", "dossiers:write", "webhook:receive"],
+        key_prefix, key_hash,
+        created_by: user?.id ?? null,
+      });
+      if (error) throw error;
+      return { key };
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["nsia_api_keys"] }),
+  });
+}
+
+export function useRevokeNsiaApiKey() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await (supabase as any).from("nsia_api_keys").update({ active: false, revoked_at: new Date().toISOString() }).eq("id", id);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["nsia_api_keys"] }),
+  });
+}
+
+export function useDeleteNsiaApiKey() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => { await (supabase as any).from("nsia_api_keys").delete().eq("id", id); },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["nsia_api_keys"] }),
+  });
+}
+
+export function useNsiaWebhooks() {
+  return useQuery({
+    queryKey: ["nsia_webhooks"],
+    queryFn: async () => safe(() => (supabase as any).from("nsia_webhooks").select("*").order("created_at", { ascending: false })) ?? [],
+  });
+}
+
+export function useUpsertNsiaWebhook() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (p: any) => {
+      const { id, ...rest } = p;
+      if (!rest.secret) {
+        const bytes = new Uint8Array(24);
+        crypto.getRandomValues(bytes);
+        rest.secret = "whsec_" + Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
+      }
+      if (id) await (supabase as any).from("nsia_webhooks").update(rest).eq("id", id);
+      else await (supabase as any).from("nsia_webhooks").insert(rest);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["nsia_webhooks"] }),
+  });
+}
+
+export function useDeleteNsiaWebhook() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => { await (supabase as any).from("nsia_webhooks").delete().eq("id", id); },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["nsia_webhooks"] }),
+  });
+}
+
+export function useAlertes(onlyOpen = true) {
+  return useQuery({
+    queryKey: ["alertes", onlyOpen],
+    queryFn: async () => {
+      const base = (supabase as any).from("alertes").select("*, dossiers(numero)").order("created_at", { ascending: false }).limit(500);
+      const q = onlyOpen ? base.eq("resolue", false) : base;
+      return safe(() => q) ?? [];
+    },
+  });
+}
+
+export function useResolveAlerte() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      await (supabase as any).from("alertes").update({
+        resolue: true, resolue_at: new Date().toISOString(), resolue_by: user?.id ?? null,
+      }).eq("id", id);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["alertes"] }),
+  });
+}
+
+export async function runNsiaReconcile() {
+  const r = await fetch("/api/public/hooks/nsia-reconcile", { method: "POST" });
+  return r.json();
+}
