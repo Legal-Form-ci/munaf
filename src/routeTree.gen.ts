@@ -26,15 +26,18 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminQuartiersRouteImport } from './routes/admin.quartiers'
 import { Route as AdminParametresRouteImport } from './routes/admin.parametres'
+import { Route as AdminNsiaIntegrationRouteImport } from './routes/admin.nsia-integration'
 import { Route as AdminNsiaRouteImport } from './routes/admin.nsia'
 import { Route as AdminMembresRouteImport } from './routes/admin.membres'
 import { Route as AdminDossiersRouteImport } from './routes/admin.dossiers'
 import { Route as AdminCotisationsRouteImport } from './routes/admin.cotisations'
 import { Route as AdminAuditRouteImport } from './routes/admin.audit'
 import { Route as AdminAssociationsRouteImport } from './routes/admin.associations'
+import { Route as AdminAlertesRouteImport } from './routes/admin.alertes'
 import { Route as ApiPublicNsiaWebhookRouteImport } from './routes/api.public.nsia.webhook'
 import { Route as ApiPublicNsiaHealthRouteImport } from './routes/api.public.nsia.health'
 import { Route as ApiPublicNsiaDossiersRouteImport } from './routes/api.public.nsia.dossiers'
+import { Route as ApiPublicHooksNsiaReconcileRouteImport } from './routes/api.public.hooks.nsia-reconcile'
 import { Route as ApiPublicNsiaDossiersIdRouteImport } from './routes/api.public.nsia.dossiers.$id'
 
 const VerificationRoute = VerificationRouteImport.update({
@@ -122,6 +125,11 @@ const AdminParametresRoute = AdminParametresRouteImport.update({
   path: '/admin/parametres',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminNsiaIntegrationRoute = AdminNsiaIntegrationRouteImport.update({
+  id: '/admin/nsia-integration',
+  path: '/admin/nsia-integration',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminNsiaRoute = AdminNsiaRouteImport.update({
   id: '/admin/nsia',
   path: '/admin/nsia',
@@ -152,6 +160,11 @@ const AdminAssociationsRoute = AdminAssociationsRouteImport.update({
   path: '/admin/associations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAlertesRoute = AdminAlertesRouteImport.update({
+  id: '/admin/alertes',
+  path: '/admin/alertes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicNsiaWebhookRoute = ApiPublicNsiaWebhookRouteImport.update({
   id: '/api/public/nsia/webhook',
   path: '/api/public/nsia/webhook',
@@ -167,6 +180,12 @@ const ApiPublicNsiaDossiersRoute = ApiPublicNsiaDossiersRouteImport.update({
   path: '/api/public/nsia/dossiers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksNsiaReconcileRoute =
+  ApiPublicHooksNsiaReconcileRouteImport.update({
+    id: '/api/public/hooks/nsia-reconcile',
+    path: '/api/public/hooks/nsia-reconcile',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicNsiaDossiersIdRoute = ApiPublicNsiaDossiersIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -188,15 +207,18 @@ export interface FileRoutesByFullPath {
   '/nsia': typeof NsiaRoute
   '/nsia-api': typeof NsiaApiRoute
   '/verification': typeof VerificationRoute
+  '/admin/alertes': typeof AdminAlertesRoute
   '/admin/associations': typeof AdminAssociationsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/cotisations': typeof AdminCotisationsRoute
   '/admin/dossiers': typeof AdminDossiersRoute
   '/admin/membres': typeof AdminMembresRoute
   '/admin/nsia': typeof AdminNsiaRoute
+  '/admin/nsia-integration': typeof AdminNsiaIntegrationRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/quartiers': typeof AdminQuartiersRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/public/hooks/nsia-reconcile': typeof ApiPublicHooksNsiaReconcileRoute
   '/api/public/nsia/dossiers': typeof ApiPublicNsiaDossiersRouteWithChildren
   '/api/public/nsia/health': typeof ApiPublicNsiaHealthRoute
   '/api/public/nsia/webhook': typeof ApiPublicNsiaWebhookRoute
@@ -217,15 +239,18 @@ export interface FileRoutesByTo {
   '/nsia': typeof NsiaRoute
   '/nsia-api': typeof NsiaApiRoute
   '/verification': typeof VerificationRoute
+  '/admin/alertes': typeof AdminAlertesRoute
   '/admin/associations': typeof AdminAssociationsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/cotisations': typeof AdminCotisationsRoute
   '/admin/dossiers': typeof AdminDossiersRoute
   '/admin/membres': typeof AdminMembresRoute
   '/admin/nsia': typeof AdminNsiaRoute
+  '/admin/nsia-integration': typeof AdminNsiaIntegrationRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/quartiers': typeof AdminQuartiersRoute
   '/admin': typeof AdminIndexRoute
+  '/api/public/hooks/nsia-reconcile': typeof ApiPublicHooksNsiaReconcileRoute
   '/api/public/nsia/dossiers': typeof ApiPublicNsiaDossiersRouteWithChildren
   '/api/public/nsia/health': typeof ApiPublicNsiaHealthRoute
   '/api/public/nsia/webhook': typeof ApiPublicNsiaWebhookRoute
@@ -247,15 +272,18 @@ export interface FileRoutesById {
   '/nsia': typeof NsiaRoute
   '/nsia-api': typeof NsiaApiRoute
   '/verification': typeof VerificationRoute
+  '/admin/alertes': typeof AdminAlertesRoute
   '/admin/associations': typeof AdminAssociationsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/cotisations': typeof AdminCotisationsRoute
   '/admin/dossiers': typeof AdminDossiersRoute
   '/admin/membres': typeof AdminMembresRoute
   '/admin/nsia': typeof AdminNsiaRoute
+  '/admin/nsia-integration': typeof AdminNsiaIntegrationRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/quartiers': typeof AdminQuartiersRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/public/hooks/nsia-reconcile': typeof ApiPublicHooksNsiaReconcileRoute
   '/api/public/nsia/dossiers': typeof ApiPublicNsiaDossiersRouteWithChildren
   '/api/public/nsia/health': typeof ApiPublicNsiaHealthRoute
   '/api/public/nsia/webhook': typeof ApiPublicNsiaWebhookRoute
@@ -278,15 +306,18 @@ export interface FileRouteTypes {
     | '/nsia'
     | '/nsia-api'
     | '/verification'
+    | '/admin/alertes'
     | '/admin/associations'
     | '/admin/audit'
     | '/admin/cotisations'
     | '/admin/dossiers'
     | '/admin/membres'
     | '/admin/nsia'
+    | '/admin/nsia-integration'
     | '/admin/parametres'
     | '/admin/quartiers'
     | '/admin/'
+    | '/api/public/hooks/nsia-reconcile'
     | '/api/public/nsia/dossiers'
     | '/api/public/nsia/health'
     | '/api/public/nsia/webhook'
@@ -307,15 +338,18 @@ export interface FileRouteTypes {
     | '/nsia'
     | '/nsia-api'
     | '/verification'
+    | '/admin/alertes'
     | '/admin/associations'
     | '/admin/audit'
     | '/admin/cotisations'
     | '/admin/dossiers'
     | '/admin/membres'
     | '/admin/nsia'
+    | '/admin/nsia-integration'
     | '/admin/parametres'
     | '/admin/quartiers'
     | '/admin'
+    | '/api/public/hooks/nsia-reconcile'
     | '/api/public/nsia/dossiers'
     | '/api/public/nsia/health'
     | '/api/public/nsia/webhook'
@@ -336,15 +370,18 @@ export interface FileRouteTypes {
     | '/nsia'
     | '/nsia-api'
     | '/verification'
+    | '/admin/alertes'
     | '/admin/associations'
     | '/admin/audit'
     | '/admin/cotisations'
     | '/admin/dossiers'
     | '/admin/membres'
     | '/admin/nsia'
+    | '/admin/nsia-integration'
     | '/admin/parametres'
     | '/admin/quartiers'
     | '/admin/'
+    | '/api/public/hooks/nsia-reconcile'
     | '/api/public/nsia/dossiers'
     | '/api/public/nsia/health'
     | '/api/public/nsia/webhook'
@@ -366,15 +403,18 @@ export interface RootRouteChildren {
   NsiaRoute: typeof NsiaRoute
   NsiaApiRoute: typeof NsiaApiRoute
   VerificationRoute: typeof VerificationRoute
+  AdminAlertesRoute: typeof AdminAlertesRoute
   AdminAssociationsRoute: typeof AdminAssociationsRoute
   AdminAuditRoute: typeof AdminAuditRoute
   AdminCotisationsRoute: typeof AdminCotisationsRoute
   AdminDossiersRoute: typeof AdminDossiersRoute
   AdminMembresRoute: typeof AdminMembresRoute
   AdminNsiaRoute: typeof AdminNsiaRoute
+  AdminNsiaIntegrationRoute: typeof AdminNsiaIntegrationRoute
   AdminParametresRoute: typeof AdminParametresRoute
   AdminQuartiersRoute: typeof AdminQuartiersRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  ApiPublicHooksNsiaReconcileRoute: typeof ApiPublicHooksNsiaReconcileRoute
   ApiPublicNsiaDossiersRoute: typeof ApiPublicNsiaDossiersRouteWithChildren
   ApiPublicNsiaHealthRoute: typeof ApiPublicNsiaHealthRoute
   ApiPublicNsiaWebhookRoute: typeof ApiPublicNsiaWebhookRoute
@@ -501,6 +541,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminParametresRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/nsia-integration': {
+      id: '/admin/nsia-integration'
+      path: '/admin/nsia-integration'
+      fullPath: '/admin/nsia-integration'
+      preLoaderRoute: typeof AdminNsiaIntegrationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/nsia': {
       id: '/admin/nsia'
       path: '/admin/nsia'
@@ -543,6 +590,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAssociationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/alertes': {
+      id: '/admin/alertes'
+      path: '/admin/alertes'
+      fullPath: '/admin/alertes'
+      preLoaderRoute: typeof AdminAlertesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/nsia/webhook': {
       id: '/api/public/nsia/webhook'
       path: '/api/public/nsia/webhook'
@@ -562,6 +616,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/nsia/dossiers'
       fullPath: '/api/public/nsia/dossiers'
       preLoaderRoute: typeof ApiPublicNsiaDossiersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/nsia-reconcile': {
+      id: '/api/public/hooks/nsia-reconcile'
+      path: '/api/public/hooks/nsia-reconcile'
+      fullPath: '/api/public/hooks/nsia-reconcile'
+      preLoaderRoute: typeof ApiPublicHooksNsiaReconcileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/nsia/dossiers/$id': {
@@ -602,15 +663,18 @@ const rootRouteChildren: RootRouteChildren = {
   NsiaRoute: NsiaRoute,
   NsiaApiRoute: NsiaApiRoute,
   VerificationRoute: VerificationRoute,
+  AdminAlertesRoute: AdminAlertesRoute,
   AdminAssociationsRoute: AdminAssociationsRoute,
   AdminAuditRoute: AdminAuditRoute,
   AdminCotisationsRoute: AdminCotisationsRoute,
   AdminDossiersRoute: AdminDossiersRoute,
   AdminMembresRoute: AdminMembresRoute,
   AdminNsiaRoute: AdminNsiaRoute,
+  AdminNsiaIntegrationRoute: AdminNsiaIntegrationRoute,
   AdminParametresRoute: AdminParametresRoute,
   AdminQuartiersRoute: AdminQuartiersRoute,
   AdminIndexRoute: AdminIndexRoute,
+  ApiPublicHooksNsiaReconcileRoute: ApiPublicHooksNsiaReconcileRoute,
   ApiPublicNsiaDossiersRoute: ApiPublicNsiaDossiersRouteWithChildren,
   ApiPublicNsiaHealthRoute: ApiPublicNsiaHealthRoute,
   ApiPublicNsiaWebhookRoute: ApiPublicNsiaWebhookRoute,

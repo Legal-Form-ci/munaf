@@ -10,7 +10,7 @@ export const Route = createFileRoute("/api/public/nsia/dossiers")({
 
       // GET /api/public/nsia/dossiers?status=transmis&limit=50&since=ISO
       GET: async ({ request }) => {
-        const guard = requireNsiaKey(request); if (guard) return guard;
+        const guard = await requireNsiaKey(request); if (guard) return guard;
         const url = new URL(request.url);
         const status = url.searchParams.get("status");
         const limit = Math.min(Number(url.searchParams.get("limit") ?? 100), 500);

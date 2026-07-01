@@ -13,7 +13,7 @@ export const Route = createFileRoute("/api/public/nsia/dossiers/$id")({
       OPTIONS: async () => optionsResponse(),
 
       GET: async ({ request, params }) => {
-        const guard = requireNsiaKey(request); if (guard) return guard;
+        const guard = await requireNsiaKey(request); if (guard) return guard;
         const admin = await getAdmin();
         const { data, error } = await (admin as any).from("dossiers")
           .select("*, membres(matricule,nom,prenom,quartier,formule,telephone,photo_url,association_id), dossier_documents(*)")
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/api/public/nsia/dossiers/$id")({
 
       // PATCH : { status, motif_rejet?, montant_assistance?, reference_nsia? }
       PATCH: async ({ request, params }) => {
-        const guard = requireNsiaKey(request); if (guard) return guard;
+        const guard = await requireNsiaKey(request); if (guard) return guard;
         let body: any = {};
         try { body = await request.json(); } catch { return jsonResponse({ error: "invalid_json" }, 400); }
         const patch: any = {};
