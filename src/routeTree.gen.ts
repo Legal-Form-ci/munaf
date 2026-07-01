@@ -35,6 +35,7 @@ import { Route as AdminAssociationsRouteImport } from './routes/admin.associatio
 import { Route as ApiPublicNsiaWebhookRouteImport } from './routes/api.public.nsia.webhook'
 import { Route as ApiPublicNsiaHealthRouteImport } from './routes/api.public.nsia.health'
 import { Route as ApiPublicNsiaDossiersRouteImport } from './routes/api.public.nsia.dossiers'
+import { Route as ApiPublicHooksNsiaReconcileRouteImport } from './routes/api.public.hooks.nsia-reconcile'
 import { Route as ApiPublicNsiaDossiersIdRouteImport } from './routes/api.public.nsia.dossiers.$id'
 
 const VerificationRoute = VerificationRouteImport.update({
@@ -167,6 +168,12 @@ const ApiPublicNsiaDossiersRoute = ApiPublicNsiaDossiersRouteImport.update({
   path: '/api/public/nsia/dossiers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksNsiaReconcileRoute =
+  ApiPublicHooksNsiaReconcileRouteImport.update({
+    id: '/api/public/hooks/nsia-reconcile',
+    path: '/api/public/hooks/nsia-reconcile',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicNsiaDossiersIdRoute = ApiPublicNsiaDossiersIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -197,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/quartiers': typeof AdminQuartiersRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/public/hooks/nsia-reconcile': typeof ApiPublicHooksNsiaReconcileRoute
   '/api/public/nsia/dossiers': typeof ApiPublicNsiaDossiersRouteWithChildren
   '/api/public/nsia/health': typeof ApiPublicNsiaHealthRoute
   '/api/public/nsia/webhook': typeof ApiPublicNsiaWebhookRoute
@@ -226,6 +234,7 @@ export interface FileRoutesByTo {
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/quartiers': typeof AdminQuartiersRoute
   '/admin': typeof AdminIndexRoute
+  '/api/public/hooks/nsia-reconcile': typeof ApiPublicHooksNsiaReconcileRoute
   '/api/public/nsia/dossiers': typeof ApiPublicNsiaDossiersRouteWithChildren
   '/api/public/nsia/health': typeof ApiPublicNsiaHealthRoute
   '/api/public/nsia/webhook': typeof ApiPublicNsiaWebhookRoute
@@ -256,6 +265,7 @@ export interface FileRoutesById {
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/quartiers': typeof AdminQuartiersRoute
   '/admin/': typeof AdminIndexRoute
+  '/api/public/hooks/nsia-reconcile': typeof ApiPublicHooksNsiaReconcileRoute
   '/api/public/nsia/dossiers': typeof ApiPublicNsiaDossiersRouteWithChildren
   '/api/public/nsia/health': typeof ApiPublicNsiaHealthRoute
   '/api/public/nsia/webhook': typeof ApiPublicNsiaWebhookRoute
@@ -287,6 +297,7 @@ export interface FileRouteTypes {
     | '/admin/parametres'
     | '/admin/quartiers'
     | '/admin/'
+    | '/api/public/hooks/nsia-reconcile'
     | '/api/public/nsia/dossiers'
     | '/api/public/nsia/health'
     | '/api/public/nsia/webhook'
@@ -316,6 +327,7 @@ export interface FileRouteTypes {
     | '/admin/parametres'
     | '/admin/quartiers'
     | '/admin'
+    | '/api/public/hooks/nsia-reconcile'
     | '/api/public/nsia/dossiers'
     | '/api/public/nsia/health'
     | '/api/public/nsia/webhook'
@@ -345,6 +357,7 @@ export interface FileRouteTypes {
     | '/admin/parametres'
     | '/admin/quartiers'
     | '/admin/'
+    | '/api/public/hooks/nsia-reconcile'
     | '/api/public/nsia/dossiers'
     | '/api/public/nsia/health'
     | '/api/public/nsia/webhook'
@@ -375,6 +388,7 @@ export interface RootRouteChildren {
   AdminParametresRoute: typeof AdminParametresRoute
   AdminQuartiersRoute: typeof AdminQuartiersRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  ApiPublicHooksNsiaReconcileRoute: typeof ApiPublicHooksNsiaReconcileRoute
   ApiPublicNsiaDossiersRoute: typeof ApiPublicNsiaDossiersRouteWithChildren
   ApiPublicNsiaHealthRoute: typeof ApiPublicNsiaHealthRoute
   ApiPublicNsiaWebhookRoute: typeof ApiPublicNsiaWebhookRoute
@@ -564,6 +578,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicNsiaDossiersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/nsia-reconcile': {
+      id: '/api/public/hooks/nsia-reconcile'
+      path: '/api/public/hooks/nsia-reconcile'
+      fullPath: '/api/public/hooks/nsia-reconcile'
+      preLoaderRoute: typeof ApiPublicHooksNsiaReconcileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/nsia/dossiers/$id': {
       id: '/api/public/nsia/dossiers/$id'
       path: '/$id'
@@ -611,6 +632,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminParametresRoute: AdminParametresRoute,
   AdminQuartiersRoute: AdminQuartiersRoute,
   AdminIndexRoute: AdminIndexRoute,
+  ApiPublicHooksNsiaReconcileRoute: ApiPublicHooksNsiaReconcileRoute,
   ApiPublicNsiaDossiersRoute: ApiPublicNsiaDossiersRouteWithChildren,
   ApiPublicNsiaHealthRoute: ApiPublicNsiaHealthRoute,
   ApiPublicNsiaWebhookRoute: ApiPublicNsiaWebhookRoute,

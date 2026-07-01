@@ -93,14 +93,14 @@ async function run() {
 
   // 3) API failures dans les dernières 24h
   const failed = (events ?? []).filter(
-    (e) => e.status === "failed" && now - new Date(e.created_at).getTime() < 86400000,
+    (e: any) => e.status === "failed" && now - new Date(e.created_at).getTime() < 86400000,
   );
   if (failed.length >= 3) {
     alerts.push({
       type: "api_failure",
       severity: "critical",
       titre: `${failed.length} échecs API NSIA dans les dernières 24h`,
-      message: failed.slice(0, 3).map((f) => f.message).join(" · "),
+      message: failed.slice(0, 3).map((f: any) => f.message).join(" · "),
       payload: { count: failed.length },
     });
   }
