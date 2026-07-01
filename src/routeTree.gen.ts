@@ -26,6 +26,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminQuartiersRouteImport } from './routes/admin.quartiers'
 import { Route as AdminParametresRouteImport } from './routes/admin.parametres'
+import { Route as AdminNsiaIntegrationRouteImport } from './routes/admin.nsia-integration'
 import { Route as AdminNsiaRouteImport } from './routes/admin.nsia'
 import { Route as AdminMembresRouteImport } from './routes/admin.membres'
 import { Route as AdminDossiersRouteImport } from './routes/admin.dossiers'
@@ -123,6 +124,11 @@ const AdminParametresRoute = AdminParametresRouteImport.update({
   path: '/admin/parametres',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminNsiaIntegrationRoute = AdminNsiaIntegrationRouteImport.update({
+  id: '/admin/nsia-integration',
+  path: '/admin/nsia-integration',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminNsiaRoute = AdminNsiaRouteImport.update({
   id: '/admin/nsia',
   path: '/admin/nsia',
@@ -201,6 +207,7 @@ export interface FileRoutesByFullPath {
   '/admin/dossiers': typeof AdminDossiersRoute
   '/admin/membres': typeof AdminMembresRoute
   '/admin/nsia': typeof AdminNsiaRoute
+  '/admin/nsia-integration': typeof AdminNsiaIntegrationRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/quartiers': typeof AdminQuartiersRoute
   '/admin/': typeof AdminIndexRoute
@@ -231,6 +238,7 @@ export interface FileRoutesByTo {
   '/admin/dossiers': typeof AdminDossiersRoute
   '/admin/membres': typeof AdminMembresRoute
   '/admin/nsia': typeof AdminNsiaRoute
+  '/admin/nsia-integration': typeof AdminNsiaIntegrationRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/quartiers': typeof AdminQuartiersRoute
   '/admin': typeof AdminIndexRoute
@@ -262,6 +270,7 @@ export interface FileRoutesById {
   '/admin/dossiers': typeof AdminDossiersRoute
   '/admin/membres': typeof AdminMembresRoute
   '/admin/nsia': typeof AdminNsiaRoute
+  '/admin/nsia-integration': typeof AdminNsiaIntegrationRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/quartiers': typeof AdminQuartiersRoute
   '/admin/': typeof AdminIndexRoute
@@ -294,6 +303,7 @@ export interface FileRouteTypes {
     | '/admin/dossiers'
     | '/admin/membres'
     | '/admin/nsia'
+    | '/admin/nsia-integration'
     | '/admin/parametres'
     | '/admin/quartiers'
     | '/admin/'
@@ -324,6 +334,7 @@ export interface FileRouteTypes {
     | '/admin/dossiers'
     | '/admin/membres'
     | '/admin/nsia'
+    | '/admin/nsia-integration'
     | '/admin/parametres'
     | '/admin/quartiers'
     | '/admin'
@@ -354,6 +365,7 @@ export interface FileRouteTypes {
     | '/admin/dossiers'
     | '/admin/membres'
     | '/admin/nsia'
+    | '/admin/nsia-integration'
     | '/admin/parametres'
     | '/admin/quartiers'
     | '/admin/'
@@ -385,6 +397,7 @@ export interface RootRouteChildren {
   AdminDossiersRoute: typeof AdminDossiersRoute
   AdminMembresRoute: typeof AdminMembresRoute
   AdminNsiaRoute: typeof AdminNsiaRoute
+  AdminNsiaIntegrationRoute: typeof AdminNsiaIntegrationRoute
   AdminParametresRoute: typeof AdminParametresRoute
   AdminQuartiersRoute: typeof AdminQuartiersRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -515,6 +528,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminParametresRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/nsia-integration': {
+      id: '/admin/nsia-integration'
+      path: '/admin/nsia-integration'
+      fullPath: '/admin/nsia-integration'
+      preLoaderRoute: typeof AdminNsiaIntegrationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/nsia': {
       id: '/admin/nsia'
       path: '/admin/nsia'
@@ -629,6 +649,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminDossiersRoute: AdminDossiersRoute,
   AdminMembresRoute: AdminMembresRoute,
   AdminNsiaRoute: AdminNsiaRoute,
+  AdminNsiaIntegrationRoute: AdminNsiaIntegrationRoute,
   AdminParametresRoute: AdminParametresRoute,
   AdminQuartiersRoute: AdminQuartiersRoute,
   AdminIndexRoute: AdminIndexRoute,
