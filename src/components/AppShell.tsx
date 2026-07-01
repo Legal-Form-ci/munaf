@@ -3,6 +3,7 @@ import { useEffect, type ReactNode } from "react";
 import {
   LayoutDashboard, Users, Wallet, FileText, MapPin, Bell, Search,
   ShieldCheck, Home, LogOut, Menu, Building2, Cable, ScrollText, Settings,
+  KeyRound, AlertTriangle,
 } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/munaf-logo.png";
