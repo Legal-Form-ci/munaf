@@ -33,6 +33,7 @@ import { Route as AdminDossiersRouteImport } from './routes/admin.dossiers'
 import { Route as AdminCotisationsRouteImport } from './routes/admin.cotisations'
 import { Route as AdminAuditRouteImport } from './routes/admin.audit'
 import { Route as AdminAssociationsRouteImport } from './routes/admin.associations'
+import { Route as AdminAlertesRouteImport } from './routes/admin.alertes'
 import { Route as ApiPublicNsiaWebhookRouteImport } from './routes/api.public.nsia.webhook'
 import { Route as ApiPublicNsiaHealthRouteImport } from './routes/api.public.nsia.health'
 import { Route as ApiPublicNsiaDossiersRouteImport } from './routes/api.public.nsia.dossiers'
@@ -159,6 +160,11 @@ const AdminAssociationsRoute = AdminAssociationsRouteImport.update({
   path: '/admin/associations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAlertesRoute = AdminAlertesRouteImport.update({
+  id: '/admin/alertes',
+  path: '/admin/alertes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicNsiaWebhookRoute = ApiPublicNsiaWebhookRouteImport.update({
   id: '/api/public/nsia/webhook',
   path: '/api/public/nsia/webhook',
@@ -201,6 +207,7 @@ export interface FileRoutesByFullPath {
   '/nsia': typeof NsiaRoute
   '/nsia-api': typeof NsiaApiRoute
   '/verification': typeof VerificationRoute
+  '/admin/alertes': typeof AdminAlertesRoute
   '/admin/associations': typeof AdminAssociationsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/cotisations': typeof AdminCotisationsRoute
@@ -232,6 +239,7 @@ export interface FileRoutesByTo {
   '/nsia': typeof NsiaRoute
   '/nsia-api': typeof NsiaApiRoute
   '/verification': typeof VerificationRoute
+  '/admin/alertes': typeof AdminAlertesRoute
   '/admin/associations': typeof AdminAssociationsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/cotisations': typeof AdminCotisationsRoute
@@ -264,6 +272,7 @@ export interface FileRoutesById {
   '/nsia': typeof NsiaRoute
   '/nsia-api': typeof NsiaApiRoute
   '/verification': typeof VerificationRoute
+  '/admin/alertes': typeof AdminAlertesRoute
   '/admin/associations': typeof AdminAssociationsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/cotisations': typeof AdminCotisationsRoute
@@ -297,6 +306,7 @@ export interface FileRouteTypes {
     | '/nsia'
     | '/nsia-api'
     | '/verification'
+    | '/admin/alertes'
     | '/admin/associations'
     | '/admin/audit'
     | '/admin/cotisations'
@@ -328,6 +338,7 @@ export interface FileRouteTypes {
     | '/nsia'
     | '/nsia-api'
     | '/verification'
+    | '/admin/alertes'
     | '/admin/associations'
     | '/admin/audit'
     | '/admin/cotisations'
@@ -359,6 +370,7 @@ export interface FileRouteTypes {
     | '/nsia'
     | '/nsia-api'
     | '/verification'
+    | '/admin/alertes'
     | '/admin/associations'
     | '/admin/audit'
     | '/admin/cotisations'
@@ -391,6 +403,7 @@ export interface RootRouteChildren {
   NsiaRoute: typeof NsiaRoute
   NsiaApiRoute: typeof NsiaApiRoute
   VerificationRoute: typeof VerificationRoute
+  AdminAlertesRoute: typeof AdminAlertesRoute
   AdminAssociationsRoute: typeof AdminAssociationsRoute
   AdminAuditRoute: typeof AdminAuditRoute
   AdminCotisationsRoute: typeof AdminCotisationsRoute
@@ -577,6 +590,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAssociationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/alertes': {
+      id: '/admin/alertes'
+      path: '/admin/alertes'
+      fullPath: '/admin/alertes'
+      preLoaderRoute: typeof AdminAlertesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/nsia/webhook': {
       id: '/api/public/nsia/webhook'
       path: '/api/public/nsia/webhook'
@@ -643,6 +663,7 @@ const rootRouteChildren: RootRouteChildren = {
   NsiaRoute: NsiaRoute,
   NsiaApiRoute: NsiaApiRoute,
   VerificationRoute: VerificationRoute,
+  AdminAlertesRoute: AdminAlertesRoute,
   AdminAssociationsRoute: AdminAssociationsRoute,
   AdminAuditRoute: AdminAuditRoute,
   AdminCotisationsRoute: AdminCotisationsRoute,
